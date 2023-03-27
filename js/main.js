@@ -167,4 +167,33 @@ window.onload = function () {
         });
 };
 
+//begin script when window loads
+window.onload = setMap();
 
+// set up choropleth map
+function setMap() {
+    // use Promise.all() to parallelize asynchronius data loading
+    var promises = [d3.csv("data/NVvoters.csv"),
+    d3.json("data/NVCounties_geog_noattr_simp40.topojson"),
+    d3.json("data/NVState_geog.topojson")
+    ];
+    Promise.all(promises).then(callback);
+
+    function callback(data) {
+        var csvData = data[0],
+            counties = data[1],
+            state = data[2];
+        //console.log(csvData);
+        console.log(counties);
+        // console.log(state);
+
+        //translate the Nevada TopoJSON
+        var nevadaState = topojson.feature(state, state.objects.NVState_geog);
+        var nevadaCounties = topojson.feature(counties, counties.objects.NVCounties_geog_noattr);
+
+        //examine the results
+        console.log(nevadaState);
+        console.log(nevadaCounties);
+
+    };
+};
