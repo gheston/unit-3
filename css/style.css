@@ -14,3 +14,15 @@
 .title {
     font-size: 2em;
 }
+
+.nevada {
+    fill: #fff;
+    stroke: #ccc;
+    stroke-width: 2px;
+}
+
+.county {
+    fill: #fff;
+    stroke: #2ba9c9;
+    stroke-width: 2px;
+}

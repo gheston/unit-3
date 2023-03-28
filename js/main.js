@@ -172,11 +172,33 @@ window.onload = setMap();
 
 // set up choropleth map
 function setMap() {
+    // map frame dimenstions
+    var width = 960,
+        height = 460;
+
+    // create new svg container for the map
+    var map = d3.select("body")
+        .append("svg")
+        .attr("class", "map")
+        .attr("width", width)
+        .attr("height", height);
+
+    // create Albers Equal Area conic projection centered on Nevada
+    var projection = d3.geoAlbers()
+        .center([0, 38.5])
+        .rotate([117, 0, 0]) //weird that west longitude is positive for d3
+        .parallels([35, 41]) //made these up, fix them later
+        .scale(2500)
+        .translate([width / 2, height / 2]);
+
+    var path = d3.geoPath()
+        .projection(projection);
+
     // use Promise.all() to parallelize asynchronius data loading
-    var promises = [d3.csv("data/NVvoters.csv"),
-    d3.json("data/NVCounties_geog_noattr_simp40.topojson"),
-    d3.json("data/NVState_geog.topojson")
-    ];
+    var promises = [];
+    promises.push(d3.csv("data/NVvoters.csv")); //load attributes from csv,
+    promises.push(d3.json("data/NVCounties_geog_noattr.topojson")); // load choropleth spatial data,
+    promises.push(d3.json("data/NVState_geog.topojson")); // load background spatial data
     Promise.all(promises).then(callback);
 
     function callback(data) {
@@ -184,16 +206,34 @@ function setMap() {
             counties = data[1],
             state = data[2];
         //console.log(csvData);
-        console.log(counties);
+        //console.log(counties);
         // console.log(state);
 
         //translate the Nevada TopoJSON
         var nevadaState = topojson.feature(state, state.objects.NVState_geog);
-        var nevadaCounties = topojson.feature(counties, counties.objects.NVCounties_geog_noattr);
+        var nevadaCounties = topojson.feature(counties, counties.objects.NVCounties_geog_noattr); // object was called "NVCounties_geog_noattr" even tho the file was called NVCounties_geog_noattr_simp40.topojson
 
         //examine the results
         console.log(nevadaState);
         console.log(nevadaCounties);
 
+        //add Nevada state to the map
+        var states = map.append("path")
+            .datum(nevadaState)
+            .attr("class", "nevada")
+            .attr("d", path);
+
+        // add Counties to map
+        var regions = map.selectAll(".regions")
+            .data(nevadaCounties)
+            .enter()
+            .append("path")
+            .attr("class", function(d){
+                return "regions " + d.properties.NAME;
+            })
+            .attr("d", path);
     };
+
+
+
 };
