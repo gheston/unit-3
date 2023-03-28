@@ -214,14 +214,25 @@ function setMap() {
         var nevadaCounties = topojson.feature(counties, counties.objects.NVCounties_geog_noattr).features; // object was called "NVCounties_geog_noattr" even tho the file was called NVCounties_geog_noattr_simp40.topojson
 
         //examine the results
-        console.log(nevadaState);
-        console.log(nevadaCounties);
+        // console.log(nevadaState);
+        // console.log(nevadaCounties);
 
-        //add Nevada state to the map
-        var states = map.append("path")
-            .datum(nevadaState)
-            .attr("class", "nevada")
-            .attr("d", path);
+            // create graticule generator
+    var graticule = d3.geoGraticule()
+    .step([2, 2]) // place graticule lines ever 2 degrees of longitude and latitude
+
+        var gratBackground = map.append("path")
+        .datum(graticule.outline()) // bind graticule background
+        .attr("class", "gratBackground") // assign class for styling
+        .attr("d", path) // project graticule
+ 
+        var gratLines = map.selectAll(".gratLines") // select graticule elements that will be created
+        .data(graticule.lines()) // bind graticule lines to each element to be created
+        .enter() // create an element on each datum
+        .append("path") // append each element to the svg as a path element
+        .attr("class", "gratLines") // assign class for styling
+        .attr("d", path); // project graticule lines
+
 
         // add Counties to map
         var regions = map.selectAll(".regions")
@@ -231,8 +242,25 @@ function setMap() {
             .attr("class", function(d){
                 return "regions " + d.properties.NAME;
             })
+            .attr("d", path);       
+            
+            //add Nevada state to the map
+        
+            var states = map.append("path")
+            .datum(nevadaState)
+            .attr("class", "nevada")
             .attr("d", path);
-    };
+
+
+    
+
+    
+
+
+
+
+
+        };
 
 
 

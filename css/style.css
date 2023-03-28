@@ -16,13 +16,27 @@
 }
 
 .nevada {
-    fill: #fff;
-    stroke: #ccc;
-    stroke-width: 2px;
+    fill: rgba(0,0,0,0);
+    stroke: #2ba9c9;
+    stroke-width: 1.5px;
 }
 
 .regions {
     fill: #fff;
     stroke: #2ba9c9;
-    stroke-width: 2px;
+    stroke-width: 0.8px;
+}
+
+.gratLines {
+    fill: rgba(0,0,0,0);
+    stroke: #888;
+    stroke-width: 0.5px;
+}
+
+.gratBackground {
+    fill: #bdbdbd;
+}
+
+.map {
+    border: medium solid #999;
 }
