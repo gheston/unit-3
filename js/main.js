@@ -211,7 +211,7 @@ function setMap() {
 
         //translate the Nevada TopoJSON
         var nevadaState = topojson.feature(state, state.objects.NVState_geog);
-        var nevadaCounties = topojson.feature(counties, counties.objects.NVCounties_geog_noattr); // object was called "NVCounties_geog_noattr" even tho the file was called NVCounties_geog_noattr_simp40.topojson
+        var nevadaCounties = topojson.feature(counties, counties.objects.NVCounties_geog_noattr).features; // object was called "NVCounties_geog_noattr" even tho the file was called NVCounties_geog_noattr_simp40.topojson
 
         //examine the results
         console.log(nevadaState);
