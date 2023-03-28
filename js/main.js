@@ -217,21 +217,23 @@ function setMap() {
         // console.log(nevadaState);
         // console.log(nevadaCounties);
 
-            // create graticule generator
-    var graticule = d3.geoGraticule()
-    .step([2, 2]) // place graticule lines ever 2 degrees of longitude and latitude
+        // create graticule generator
+        var graticule = d3.geoGraticule()
+            .step([2, 2]) // place graticule lines ever 2 degrees of longitude and latitude
 
+        // add a gray background to the graticule
         var gratBackground = map.append("path")
-        .datum(graticule.outline()) // bind graticule background
-        .attr("class", "gratBackground") // assign class for styling
-        .attr("d", path) // project graticule
- 
+            .datum(graticule.outline()) // bind graticule background
+            .attr("class", "gratBackground") // assign class for styling
+            .attr("d", path) // project graticule
+
+        // add graticule lines to the map    
         var gratLines = map.selectAll(".gratLines") // select graticule elements that will be created
-        .data(graticule.lines()) // bind graticule lines to each element to be created
-        .enter() // create an element on each datum
-        .append("path") // append each element to the svg as a path element
-        .attr("class", "gratLines") // assign class for styling
-        .attr("d", path); // project graticule lines
+            .data(graticule.lines()) // bind graticule lines to each element to be created
+            .enter() // create an element on each datum
+            .append("path") // append each element to the svg as a path element
+            .attr("class", "gratLines") // assign class for styling
+            .attr("d", path); // project graticule lines
 
 
         // add Counties to map
@@ -239,26 +241,16 @@ function setMap() {
             .data(nevadaCounties)
             .enter()
             .append("path")
-            .attr("class", function(d){
+            .attr("class", function (d) {
                 return "regions " + d.properties.NAME;
             })
-            .attr("d", path);       
-            
-            //add Nevada state to the map
-        
-            var states = map.append("path")
+            .attr("d", path);
+
+        //add Nevada state to the map
+        var states = map.append("path")
             .datum(nevadaState)
             .attr("class", "nevada")
             .attr("d", path);
-
-
-    
-
-    
-
-
-
-
 
         };
 
