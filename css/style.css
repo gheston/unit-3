@@ -15,13 +15,13 @@
     font-size: 2em;
 }
 
-.nevada {
-    fill: rgba(0,0,0,0);
+.states {
+    fill: #567b85;
     stroke: #2ba9c9;
     stroke-width: 1.5px;
 }
 
-.regions {
+.counties {
     fill: #fff;
     stroke: #2ba9c9;
     stroke-width: 0.8px;

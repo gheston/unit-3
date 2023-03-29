@@ -173,7 +173,7 @@ window.onload = setMap();
 // set up choropleth map
 function setMap() {
     // map frame dimenstions
-    var width = 960,
+    var width = 350,
         height = 460;
 
     // create new svg container for the map
@@ -188,7 +188,7 @@ function setMap() {
         .center([0, 38.5])
         .rotate([117, 0, 0]) //weird that west longitude is positive for d3
         .parallels([35, 41]) //made these up, fix them later
-        .scale(2500)
+        .scale(3500)
         .translate([width / 2, height / 2]);
 
     var path = d3.geoPath()
@@ -198,7 +198,7 @@ function setMap() {
     var promises = [];
     promises.push(d3.csv("data/NVvoters.csv")); //load attributes from csv,
     promises.push(d3.json("data/NVCounties_geog_noattr.topojson")); // load choropleth spatial data,
-    promises.push(d3.json("data/NVState_geog.topojson")); // load background spatial data
+    promises.push(d3.json("data/States2.topojson")); // load background spatial data
     Promise.all(promises).then(callback);
 
     function callback(data) {
@@ -210,47 +210,51 @@ function setMap() {
         // console.log(state);
 
         //translate the Nevada TopoJSON
-        var nevadaState = topojson.feature(state, state.objects.NVState_geog);
+        var states = topojson.feature(state, state.objects.States2);
         var nevadaCounties = topojson.feature(counties, counties.objects.NVCounties_geog_noattr).features; // object was called "NVCounties_geog_noattr" even tho the file was called NVCounties_geog_noattr_simp40.topojson
 
         //examine the results
         // console.log(nevadaState);
         // console.log(nevadaCounties);
 
-        // create graticule generator
-        var graticule = d3.geoGraticule()
-            .step([2, 2]) // place graticule lines ever 2 degrees of longitude and latitude
 
-        // add a gray background to the graticule
-        var gratBackground = map.append("path")
-            .datum(graticule.outline()) // bind graticule background
-            .attr("class", "gratBackground") // assign class for styling
-            .attr("d", path) // project graticule
+        // I don't need a graticule background for my Nevada map, I'll use the neighboring states as the background
+        
+        // // create graticule generator
+        // var graticule = d3.geoGraticule()
+        //     .step([2, 2]) // place graticule lines ever 2 degrees of longitude and latitude
 
-        // add graticule lines to the map    
-        var gratLines = map.selectAll(".gratLines") // select graticule elements that will be created
-            .data(graticule.lines()) // bind graticule lines to each element to be created
-            .enter() // create an element on each datum
-            .append("path") // append each element to the svg as a path element
-            .attr("class", "gratLines") // assign class for styling
-            .attr("d", path); // project graticule lines
+        // // add a gray background to the graticule
+        // var gratBackground = map.append("path")
+        //     .datum(graticule.outline()) // bind graticule background
+        //     .attr("class", "gratBackground") // assign class for styling
+        //     .attr("d", path) // project graticule
 
+        // // add graticule lines to the map    
+        // var gratLines = map.selectAll(".gratLines") // select graticule elements that will be created
+        //     .data(graticule.lines()) // bind graticule lines to each element to be created
+        //     .enter() // create an element on each datum
+        //     .append("path") // append each element to the svg as a path element
+        //     .attr("class", "gratLines") // assign class for styling
+        //     .attr("d", path); // project graticule lines
+
+        //add Nevada state to the map
+        var nvStates = map.append("path")
+            .datum(states)
+            .attr("class", "states")
+            .attr("d", path);
 
         // add Counties to map
-        var regions = map.selectAll(".regions")
+        var nvCounties = map.selectAll(".nvCounties")
             .data(nevadaCounties)
             .enter()
             .append("path")
             .attr("class", function (d) {
-                return "regions " + d.properties.NAME;
+                return "counties " + d.properties.NAME;
             })
             .attr("d", path);
 
-        //add Nevada state to the map
-        var states = map.append("path")
-            .datum(nevadaState)
-            .attr("class", "nevada")
-            .attr("d", path);
+
 
         };
 
