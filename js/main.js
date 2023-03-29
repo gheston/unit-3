@@ -3,8 +3,10 @@
 // width and height for outer gray container
 var w = 900, h = 500;
 
-//execute script when window is loaded
-window.onload = function () {
+//execute setChart() when window is loaded
+window.onload = setChart();
+
+function setChart() {
     var container = d3.select("body") //get the <body> element from the DOM
         .append("svg") // put a new svg in the body
         .attr("width", w) // assign the width
@@ -167,12 +169,13 @@ window.onload = function () {
         });
 };
 
-//begin script when window loads
+//call setMap() when window loads
 window.onload = setMap();
+
 
 // set up choropleth map
 function setMap() {
-    // map frame dimenstions
+    // map frame dimenstions, tall an dnarrow for the trapezoid state
     var width = 350,
         height = 460;
 
@@ -187,8 +190,8 @@ function setMap() {
     var projection = d3.geoAlbers()
         .center([0, 38.5])
         .rotate([117, 0, 0]) //weird that west longitude is positive for d3
-        .parallels([35, 41]) //made these up, fix them later
-        .scale(3500)
+        .parallels([36, 41]) //made these up, fix them later
+        .scale(3500) // scale - larger is bigger, this fits NV nicely N-S in the 460px tall frame
         .translate([width / 2, height / 2]);
 
     var path = d3.geoPath()
@@ -219,7 +222,7 @@ function setMap() {
 
 
         // I don't need a graticule background for my Nevada map, I'll use the neighboring states as the background
-        
+
         // // create graticule generator
         // var graticule = d3.geoGraticule()
         //     .step([2, 2]) // place graticule lines ever 2 degrees of longitude and latitude
@@ -238,7 +241,7 @@ function setMap() {
         //     .attr("class", "gratLines") // assign class for styling
         //     .attr("d", path); // project graticule lines
 
-        //add Nevada state to the map
+        //add state outlines to the map as a background
         var nvStates = map.append("path")
             .datum(states)
             .attr("class", "states")
@@ -253,11 +256,5 @@ function setMap() {
                 return "counties " + d.properties.NAME;
             })
             .attr("d", path);
-
-
-
         };
-
-
-
 };
