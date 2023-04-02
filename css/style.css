@@ -27,7 +27,7 @@
     stroke-width: 0.8px;
 }
 
-.gratLines {
+/* .gratLines {
     fill: rgba(0,0,0,0);
     stroke: #888;
     stroke-width: 0.5px;
@@ -35,7 +35,7 @@
 
 .gratBackground {
     fill: #bdbdbd;
-}
+} */
 
 .map {
     border: medium solid #999;

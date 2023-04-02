@@ -190,7 +190,7 @@ function setMap() {
     var projection = d3.geoAlbers()
         .center([0, 38.5])
         .rotate([117, 0, 0]) //weird that west longitude is positive for d3
-        .parallels([36, 41]) //made these up, fix them later
+        .parallels([36, 41]) 
         .scale(3500) // scale - larger is bigger, this fits NV nicely N-S in the 460px tall frame
         .translate([width / 2, height / 2]);
 
