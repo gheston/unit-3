@@ -8,15 +8,13 @@
     var attrArray = ["County", "Pop2022", "AreaSqMi", "Reg_DEM", "Reg_REP", "Reg_IAP", "Reg_LPN", "Reg_Other", "Reg_NonP", "Gov_DEM", "Gov_REP", "Gov_IAP", "Gov_LPN", "Gov_None", "Sen_DEM", "Sen_REP", "Sen_IAP", "Sen_LPN", "Sen_NPP", "Sen_None", "Turnout"];
 
     var expressed = attrArray[20]; // initial attribute
-    console.log(expressed);
+    //console.log(expressed);
 
     // width and height for outer gray container
     var w = 900, h = 500;
 
-    //execute setChart() when window is loaded
-    window.onload = setChart();
-
-    function setChart() {
+   
+    function OLDsetChart() {
         var container = d3.select("body") //get the <body> element from the DOM
             .append("svg") // put a new svg in the body
             .attr("width", w) // assign the width
@@ -177,7 +175,7 @@
             .text(function (d) {
                 return "Pop. " + format(d.population); // formats the population using the format() generator
             });
-    }; // end setChart()
+    }; // end OLDsetChart()
 
     //call setMap() when window loads
     window.onload = setMap();
@@ -186,7 +184,7 @@
     // set up choropleth map
     function setMap() {
         // map frame dimenstions, tall an dnarrow for the trapezoid state
-        var width = 350,
+        var width = window.innerWidth * 0.5,
             height = 460;
 
         // create new svg container for the map
@@ -250,6 +248,9 @@
             // add enumeration units to map
             setEnumerationUnits(nevadaCounties, map, path, colorScale);
 
+            // add coordinated visualization to map
+            setChart(csvData, colorScale);
+
 
 
         }; // end callback()
@@ -300,7 +301,7 @@
             };
 
         };
-        console.log(nevadaCounties);
+        //console.log(nevadaCounties);
 
         return nevadaCounties;
     }; // end joinData()
@@ -347,7 +348,7 @@
             domainArray.push(val);
         };
 
-        console.log(domainArray);
+        //console.log(domainArray);
 
         // cluster data using ckmeans clustering algorithm to create natural breaks
         var clusters = ss.ckmeans(domainArray, 5);
@@ -356,7 +357,7 @@
             return d3.min(d);
         });
 
-        console.log(clusters);
+        //console.log(clusters);
 
         // remove first value from domain array to create class breakpoints
         domainArray.shift();
@@ -366,5 +367,54 @@
 
         return colorScale;
     }; // end makeColorScale()
+
+ //execute setChart() when window is loaded
+ //window.onload = setChart();
+
+ function setChart(csvData, colorScale){
+     // chart frame dimentions
+     var chartWidth = window.innerWidth * 0.425,
+         chartHeight = 460;
+
+     // create a second svg element to hold the bar chart
+     var chart = d3.select("body")
+         .append("svg")
+         .attr("width", chartWidth)
+         .attr("height", chartHeight)
+         .attr("class", "chart");
+
+// create a scale to size bars proportionally to frame
+var yScale = d3.scaleLinear()
+    .range([0, chartHeight])
+    .domain([0, 1]);
+
+     // set bars for each province
+     var bars = chart.selectAll(".bars")
+         .data(csvData)
+         .enter()
+         .append("rect")
+         .sort(function(a, b){
+            return a[expressed] - b[expressed]
+         })
+         .attr("class", function (d) {
+             return "bars " + d.County;
+         })
+         .attr("width", chartWidth / csvData.length - 1)
+         .attr("x", function (d, i) {
+             return i * (chartWidth / csvData.length);
+         })
+         .attr("height", function(d){
+            return yScale(parseFloat(d[expressed]));
+         })
+         .attr("y", function(d) {
+            return chartHeight - yScale(parseFloat(d[expressed]));
+         })
+         .style("fill", function(d){
+            return colorScale(d[expressed]);
+         });
+
+
+ }; // end setChart()
+
 
 })(); // end of wrapper function
