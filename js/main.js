@@ -7,7 +7,8 @@
     // variables for data join
     var attrArray = ["County", "Pop2022", "AreaSqMi", "Reg_DEM", "Reg_REP", "Reg_IAP", "Reg_LPN", "Reg_Other", "Reg_NonP", "Gov_DEM", "Gov_REP", "Gov_IAP", "Gov_LPN", "Gov_None", "Sen_DEM", "Sen_REP", "Sen_IAP", "Sen_LPN", "Sen_NPP", "Sen_None", "Turnout"];
 
-    var expressed = attrArray[3]; // initial attribute
+    var expressed = attrArray[20]; // initial attribute
+    console.log(expressed);
 
     // width and height for outer gray container
     var w = 900, h = 500;
@@ -243,11 +244,13 @@
             // jon csv data to GeoJSON enumeration units
             nevadaCounties = joinData(nevadaCounties, csvData);
 
+            // create color Scale
+            var colorScale = makeColorScale(csvData);
+            
             // add enumeration units to map
             setEnumerationUnits(nevadaCounties, map, path, colorScale);
 
-            // create color Scale
-            var colorScale = makeColorScale(csvData);
+
 
         }; // end callback()
 
@@ -302,7 +305,7 @@
         return nevadaCounties;
     }; // end joinData()
 
-    function setEnumerationUnits(nevadaCounties, map, path) {
+    function setEnumerationUnits(nevadaCounties, map, path, colorScale) {
         // add Counties to map
         var nvCounties = map.selectAll(".nvCounties")
             .data(nevadaCounties)
@@ -313,7 +316,12 @@
             })
             .attr("d", path)
             .style("fill", function(d){
-                return makeColorScale(d.properties[expressed]);
+                var value = d.properties[expressed];
+                if (value) {
+                    return colorScale(d.properties[expressed]);
+                } else {
+                    return "#ccc";
+                }
             });
     }; // end setEnumeration Units
 
@@ -333,10 +341,13 @@
 
         //build an arrray of all values of the expressed attribute
         var domainArray = [];
-        for (var i = 0; i < data.length; i++) {
+        for (var i = 0; i<data.length; i++) {
             var val = parseFloat(data[i][expressed]);
+            //console.log("val " + val);
             domainArray.push(val);
         };
+
+        console.log(domainArray);
 
         // cluster data using ckmeans clustering algorithm to create natural breaks
         var clusters = ss.ckmeans(domainArray, 5);
