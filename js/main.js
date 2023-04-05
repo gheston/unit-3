@@ -174,7 +174,7 @@
             .text(function (d) {
                 return "Pop. " + format(d.population); // formats the population using the format() generator
             });
-    };
+    }; // end setChart()
 
     //call setMap() when window loads
     window.onload = setMap();
@@ -219,6 +219,9 @@
             //console.log(counties);
             // console.log(state);
 
+            // place graticule on map
+            setGraticule(map, path);
+
             //translate the Nevada TopoJSON
             var states = topojson.feature(state, state.objects.States2);
             var nevadaCounties = topojson.feature(counties, counties.objects.NVCounties_geog_noattr).features; // object was called "NVCounties_geog_noattr" even tho the file was called NVCounties_geog_noattr_simp40.topojson
@@ -227,69 +230,85 @@
             // console.log(nevadaState);
             // console.log(nevadaCounties);
 
-
-            // I don't need a graticule background for my Nevada map, I'll use the neighboring states as the background
-
-            // // create graticule generator
-            // var graticule = d3.geoGraticule()
-            //     .step([2, 2]) // place graticule lines ever 2 degrees of longitude and latitude
-
-            // // add a gray background to the graticule
-            // var gratBackground = map.append("path")
-            //     .datum(graticule.outline()) // bind graticule background
-            //     .attr("class", "gratBackground") // assign class for styling
-            //     .attr("d", path) // project graticule
-
-            // // add graticule lines to the map    
-            // var gratLines = map.selectAll(".gratLines") // select graticule elements that will be created
-            //     .data(graticule.lines()) // bind graticule lines to each element to be created
-            //     .enter() // create an element on each datum
-            //     .append("path") // append each element to the svg as a path element
-            //     .attr("class", "gratLines") // assign class for styling
-            //     .attr("d", path); // project graticule lines
-
             //add state outlines to the map as a background
             var nvStates = map.append("path")
                 .datum(states)
                 .attr("class", "states")
                 .attr("d", path);
 
-            // add Counties to map
-            var nvCounties = map.selectAll(".nvCounties")
-                .data(nevadaCounties)
-                .enter()
-                .append("path")
-                .attr("class", function (d) {
-                    return "counties " + d.properties.NAME;
-                })
-                .attr("d", path);
 
 
+            // jon csv data to GeoJSON enumeration units
+            nevadaCounties = joinData(nevadaCounties, csvData);
 
-            // loop through csv to assign each set of csv attribute values to geojson region
-            for (var i = 0; i < csvData.length; i++) {
-                var csvRegion = csvData[i]; // the current region
-                var csvKey = csvRegion.County; // the csv primary key
+            // add enumeration units to map
+            setEnumerationUnits(nevadaCounties, map, path);
 
-                // loop through geojson regions to find correct region
-                for (var a = 0; a < nevadaCounties.length; a++) {
-                    var geojsonProps = nevadaCounties[a].properties; // the current region geojson properties
-                    var geojsonKey = geojsonProps.NAME; // the geojson primary key
 
-                    //where primary keys match, transfer csv data to geojson properties object
-                    if (geojsonKey == csvKey) {
-                        // assign all attributes and values
-                        attrArray.forEach(function (attr) {
-                            var val = parseFloat(csvRegion[attr]); // get csv attribute value
-                            geojsonProps[attr] = val; // assign attribute and value to geojson proerties
-                        });
-                    };
+        }; // end callback()
+
+    }; // end setMap()
+
+    function setGraticule(map, path) {
+        // I don't need a graticule background for my Nevada map, I'll use the neighboring states as the background
+
+        // create graticule generator
+        var graticule = d3.geoGraticule()
+            .step([2, 2]) // place graticule lines ever 2 degrees of longitude and latitude
+
+        // add a gray background to the graticule
+        var gratBackground = map.append("path")
+            .datum(graticule.outline()) // bind graticule background
+            .attr("class", "gratBackground") // assign class for styling
+            .attr("d", path) // project graticule
+
+        // add graticule lines to the map    
+        var gratLines = map.selectAll(".gratLines") // select graticule elements that will be created
+            .data(graticule.lines()) // bind graticule lines to each element to be created
+            .enter() // create an element on each datum
+            .append("path") // append each element to the svg as a path element
+            .attr("class", "gratLines") // assign class for styling
+            .attr("d", path); // project graticule lines
+    }; // end setGraticule()
+
+    function joinData(nevadaCounties, csvData) {
+        // loop through csv to assign each set of csv attribute values to geojson region
+        for (var i = 0; i < csvData.length; i++) {
+            var csvRegion = csvData[i]; // the current region
+            var csvKey = csvRegion.County; // the csv primary key
+
+            // loop through geojson regions to find correct region
+            for (var a = 0; a < nevadaCounties.length; a++) {
+                var geojsonProps = nevadaCounties[a].properties; // the current region geojson properties
+                var geojsonKey = geojsonProps.NAME; // the geojson primary key
+
+                //where primary keys match, transfer csv data to geojson properties object
+                if (geojsonKey == csvKey) {
+                    // assign all attributes and values
+                    attrArray.forEach(function (attr) {
+                        var val = parseFloat(csvRegion[attr]); // get csv attribute value
+                        geojsonProps[attr] = val; // assign attribute and value to geojson proerties
+                    });
                 };
-
             };
-            console.log(nevadaCounties);
 
         };
+        console.log(nevadaCounties);
 
-    };
+        return nevadaCounties;
+    }; // end joinData()
+
+    function setEnumerationUnits(nevadaCounties, map, path) {
+        // add Counties to map
+        var nvCounties = map.selectAll(".nvCounties")
+            .data(nevadaCounties)
+            .enter()
+            .append("path")
+            .attr("class", function (d) {
+                return "counties " + d.properties.NAME;
+            })
+            .attr("d", path);
+    }; // end setEnumeration Units
+
+
 })(); // end of wrapper function
