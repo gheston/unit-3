@@ -7,6 +7,8 @@
     // variables for data join
     var attrArray = ["County", "Pop2022", "AreaSqMi", "Reg_DEM", "Reg_REP", "Reg_IAP", "Reg_LPN", "Reg_Other", "Reg_NonP", "Gov_DEM", "Gov_REP", "Gov_IAP", "Gov_LPN", "Gov_None", "Sen_DEM", "Sen_REP", "Sen_IAP", "Sen_LPN", "Sen_NPP", "Sen_None", "Turnout"];
 
+    var expressed = attrArray[3]; // initial attribute
+
     // width and height for outer gray container
     var w = 900, h = 500;
 
@@ -309,34 +311,49 @@
             .attr("class", function (d) {
                 return "counties " + d.properties.NAME;
             })
-            .attr("d", path);
+            .attr("d", path)
+            .style("fill", function(d){
+                return makeColorScale(d.properties[expressed]);
+            });
     }; // end setEnumeration Units
 
     // function to create color scale generator
-function makeColorScale(data) {
-    var colorClasses = [
-        "#D4B9DA",
-        "#C994C7",
-        "#DF65B0",
-        "#DD1C77",
-        "#980043"
-    ];
+    function makeColorScale(data) {
+        var colorClasses = [
+            "#D4B9DA",
+            "#C994C7",
+            "#DF65B0",
+            "#DD1C77",
+            "#980043"
+        ];
 
-// create color scale generator
-var colorScale = d3.scaleQuantile()
-.range(colorClasses);
+        // create color scale generator
+        var colorScale = d3.scaleThreshold()
+            .range(colorClasses);
 
-//build an arrray of all values of the expressed attribute
-var domainArray = [];
-for (var i=0; i<data.length; i++) {
-    var val = parseFloat(data[i][expressed]);
-    domainArray.push(val);
-};
+        //build an arrray of all values of the expressed attribute
+        var domainArray = [];
+        for (var i = 0; i < data.length; i++) {
+            var val = parseFloat(data[i][expressed]);
+            domainArray.push(val);
+        };
 
-// assign array of expressed values as scale domain
-colorScale.domain(domainArray);
+        // cluster data using ckmeans clustering algorithm to create natural breaks
+        var clusters = ss.ckmeans(domainArray, 5);
+        // reset domain array to cluster minimums
+        domainArray = clusters.map(function (d) {
+            return d3.min(d);
+        });
 
-return colorScale;
-}; // end makeColorScale()
+        console.log(clusters);
+
+        // remove first value from domain array to create class breakpoints
+        domainArray.shift();
+
+        // assign array of last 4 cluster minimums as domain
+        colorScale.domain(domainArray);
+
+        return colorScale;
+    }; // end makeColorScale()
 
 })(); // end of wrapper function
