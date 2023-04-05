@@ -242,8 +242,10 @@
             nevadaCounties = joinData(nevadaCounties, csvData);
 
             // add enumeration units to map
-            setEnumerationUnits(nevadaCounties, map, path);
+            setEnumerationUnits(nevadaCounties, map, path, colorScale);
 
+            // create color Scale
+            var colorScale = makeColorScale(csvData);
 
         }; // end callback()
 
@@ -310,5 +312,31 @@
             .attr("d", path);
     }; // end setEnumeration Units
 
+    // function to create color scale generator
+function makeColorScale(data) {
+    var colorClasses = [
+        "#D4B9DA",
+        "#C994C7",
+        "#DF65B0",
+        "#DD1C77",
+        "#980043"
+    ];
+
+// create color scale generator
+var colorScale = d3.scaleQuantile()
+.range(colorClasses);
+
+//build an arrray of all values of the expressed attribute
+var domainArray = [];
+for (var i=0; i<data.length; i++) {
+    var val = parseFloat(data[i][expressed]);
+    domainArray.push(val);
+};
+
+// assign array of expressed values as scale domain
+colorScale.domain(domainArray);
+
+return colorScale;
+}; // end makeColorScale()
 
 })(); // end of wrapper function
