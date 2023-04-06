@@ -50,18 +50,19 @@
 
 .numbers {
     fill: white;
-    font-family: sans-serif;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     
 }
 
 .chartTitle {
-    font-family: sans-serif;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     font-weight: bold;
 }
 
 .chartSubtitle {
-    font-family: sans-serif;
-
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif
+     
+    
 }
 
 .chartBackground {
