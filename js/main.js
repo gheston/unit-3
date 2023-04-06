@@ -371,48 +371,114 @@
  //execute setChart() when window is loaded
  //window.onload = setChart();
 
- function setChart(csvData, colorScale){
-     // chart frame dimentions
-     var chartWidth = window.innerWidth * 0.425,
-         chartHeight = 460;
+    function setChart(csvData, colorScale) {
+        // chart frame dimentions
+        var chartWidth = window.innerWidth * 0.425,
+            chartHeight = 473,
+            leftPadding = 25,
+            rightPadding = 2,
+            topBottomPadding = 5,
+            chartInnerWidth = chartWidth - leftPadding - rightPadding,
+            chartInnerHeight = chartHeight - topBottomPadding * 2,
+            translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
 
-     // create a second svg element to hold the bar chart
-     var chart = d3.select("body")
-         .append("svg")
-         .attr("width", chartWidth)
-         .attr("height", chartHeight)
-         .attr("class", "chart");
+        // create a second svg element to hold the bar chart
+        var chart = d3.select("body")
+            .append("svg")
+            .attr("width", chartWidth)
+            .attr("height", chartHeight)
+            .attr("class", "chart");
 
-// create a scale to size bars proportionally to frame
-var yScale = d3.scaleLinear()
-    .range([0, chartHeight])
-    .domain([0, 1]);
+        // create a rectangle for chart background fill
+        var chartBackground = chart.append("rect")
+            .attr("class", "chartBackground")
+            .attr("width", chartInnerWidth)
+            .attr("height", chartInnerHeight)
+            .attr("transform", translate);
 
-     // set bars for each province
-     var bars = chart.selectAll(".bars")
-         .data(csvData)
-         .enter()
-         .append("rect")
-         .sort(function(a, b){
-            return a[expressed] - b[expressed]
-         })
-         .attr("class", function (d) {
-             return "bars " + d.County;
-         })
-         .attr("width", chartWidth / csvData.length - 1)
-         .attr("x", function (d, i) {
-             return i * (chartWidth / csvData.length);
-         })
-         .attr("height", function(d){
-            return yScale(parseFloat(d[expressed]));
-         })
-         .attr("y", function(d) {
-            return chartHeight - yScale(parseFloat(d[expressed]));
-         })
-         .style("fill", function(d){
-            return colorScale(d[expressed]);
-         });
 
+        // create a scale to size bars proportionally to frame
+        var yScale = d3.scaleLinear()
+            .range([463, 0])
+            .domain([0, 100]);
+
+        // set bars for each county
+        var bars = chart.selectAll(".bars")
+            .data(csvData)
+            .enter()
+            .append("rect")
+            .sort(function (a, b) {
+                return b[expressed] - a[expressed]
+            })
+            .attr("class", function (d) {
+                return "bars " + d.County;
+            })
+            .attr("width", chartInnerWidth / csvData.length - 1)
+            .attr("x", function (d, i) {
+                return i * (chartInnerWidth / csvData.length) + leftPadding;
+            })
+            .attr("height", function (d) {
+                return 463 - yScale(parseFloat(d[expressed] * 100));
+            })
+            .attr("y", function (d) {
+                return yScale(parseFloat(d[expressed] * 100)) + topBottomPadding;
+            })
+            .style("fill", function (d) {
+                return colorScale(d[expressed]);
+            });
+
+        var chartTitle = chart.append("text")
+            .attr("x", 40)
+            .attr("y", 40)
+            .attr("class", "chartTitle")
+            .text("Percent Voter Turnout in Each County");
+            
+        var chartSubtitle = chart.append("text")
+            .attr("x", 40)
+            .attr("y", 60)
+            .attr("class", "chartSubtitle")
+            .text("Nevada 2022 General Election");
+
+
+        // annotate bars with attribute value text
+        var numbers = chart.selectAll(".numbers")
+            .data(csvData)
+            .enter()
+            .append("text")
+            .sort(function (a, b) {
+                return b[expressed] - a[expressed]
+            })
+            .attr("class", function (d) {
+                return "numbers " + d.County;
+            })
+            .attr("text-anchor", "middle")
+            .attr("x", function (d, i) {
+                var fraction = chartInnerWidth / csvData.length;
+                return 25 + (i * fraction) + ((fraction - 1) / 2);
+            })
+            .attr("y", function (d) {
+                return yScale(parseFloat(d[expressed]) * 100) + 15 + topBottomPadding
+            })
+            .text(function (d) {
+                return Math.round(d[expressed] * 100);
+            });
+
+        // create vertical axis generator
+        var yAxis = d3.axisLeft()
+            .scale(yScale);
+
+        //place axis
+        var axis = chart.append("g")
+            .attr("class", "axis")
+            .attr("transform", translate)
+            .call(yAxis);
+
+        // create frame for chart border
+        var chartFrame = chart.append("rect")
+            .attr("class", "chartFrame")
+            .attr("width", chartInnerWidth)
+            .attr("height", chartInnerHeight)
+         .attr("transform", translate);
 
  }; // end setChart()
 
