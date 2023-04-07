@@ -222,7 +222,7 @@
         // use Promise.all() to parallelize asynchronius data loading
         var promises = [];
         promises.push(d3.csv("data/NVvotersNormalized.csv")); //load attributes from csv,
-        promises.push(d3.json("data/NVCounties_geog_noattr.topojson")); // load choropleth spatial data,
+        promises.push(d3.json("data/NVCounties_geog_noattr copy.topojson")); // load choropleth spatial data,
         promises.push(d3.json("data/States2.topojson")); // load background spatial data
         Promise.all(promises).then(callback);
 
@@ -230,7 +230,8 @@
             var csvData = data[0],
                 counties = data[1],
                 state = data[2];
-            //console.log(csvData);
+            console.log("Csv data: ");
+            console.log(csvData);
             //console.log(counties);
             // console.log(state);
 
@@ -243,7 +244,9 @@
 
             //examine the results
             // console.log(nevadaState);
-            // console.log(nevadaCounties);
+            
+            console.log("Counties:");
+            console.log(nevadaCounties);
 
             //add state outlines to the map as a background
             var nvStates = map.append("path")
@@ -334,11 +337,22 @@
             .style("fill", function (d) {
                 var value = d.properties[expressed];
                 if (value) {
-                    return colorScale(d.properties[expressed]);
+                    return colorScale(value);
                 } else {
                     return "#ccc";
                 }
+            })
+            .on("mouseover", function(event, d) {
+                highlight(d.properties);
+            })
+            .on("mouseout", function(event, d) {
+                dehighlight(d.properties);
             });
+
+
+            var desc = nvCounties.append("desc")
+            .text('{"stroke"}: "#000", "stroke-width": "0.5px"}');
+
     }; // end setEnumeration Units
 
     // function to create color scale generator
@@ -414,9 +428,16 @@
             .attr("class", function (d) {
                 return "bars " + d.County;
             })
-            .attr("width", chartInnerWidth / csvData.length - 1);
+            .attr("width", chartInnerWidth / csvData.length - 1)
+            .on("mouseover", function(event, d) {
+                highlight(d);
+            })
+            .on("mouseout", function(event, d) {
+                dehighlight(d.properties);
+            });
 
-
+            var desc = bars.append("desc")
+            .text('{"stroke": "none", "stroke-width": "0px"}');
 
         var chartTitle = chart.append("text")
             .attr("x", 40)
@@ -576,5 +597,35 @@
             var chartTitle = d3.select(".chartTitle")
             .text(expressed + " in each County");
     }; // end udateChart()
+
+// function to highlight enumeration units and bars
+function highlight(props) {
+    // change stroke
+    var selected = d3.selectAll("." + props.NAME)
+    .style("stroke", "red")
+    .style("stroke-width", "2");
+}; // end highlight()
+
+
+function dehighlight(props){
+    var selected = d3.selectAll("." + props.NAME)
+    .style("stroke", function(){
+        return getComputedStyle(this, "stroke")
+    })
+    .style("stroke-width", function(){
+        return getComputedStyle(this, "stroke-width")
+    });
+
+} // end dehighlight()
+
+function getStyle(element, styleName) {
+    var styleText = d3.select(element)
+    .select("desc")
+    .text();
+
+    var styleObject = JSON.parse(styleText);
+
+    return styleObject[styleName];
+}; // end getStyle()
 
 })(); // end of wrapper function
