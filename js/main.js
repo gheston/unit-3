@@ -13,7 +13,21 @@
     // width and height for outer gray container
     var w = 900, h = 500;
 
-   
+    // chart frame dimentions
+    var chartWidth = window.innerWidth * 0.425,
+        chartHeight = 473,
+        leftPadding = 25,
+        rightPadding = 2,
+        topBottomPadding = 5,
+        chartInnerWidth = chartWidth - leftPadding - rightPadding,
+        chartInnerHeight = chartHeight - topBottomPadding * 2,
+        translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
+
+    // create a scale to size bars proportionally to frame
+    var yScale = d3.scaleLinear()
+        .range([463, 0])
+        .domain([0, 100]);
+
     function OLDsetChart() {
         var container = d3.select("body") //get the <body> element from the DOM
             .append("svg") // put a new svg in the body
@@ -244,7 +258,7 @@
 
             // create color Scale
             var colorScale = makeColorScale(csvData);
-            
+
             // add enumeration units to map
             setEnumerationUnits(nevadaCounties, map, path, colorScale);
 
@@ -317,7 +331,7 @@
                 return "counties " + d.properties.NAME;
             })
             .attr("d", path)
-            .style("fill", function(d){
+            .style("fill", function (d) {
                 var value = d.properties[expressed];
                 if (value) {
                     return colorScale(d.properties[expressed]);
@@ -343,7 +357,7 @@
 
         //build an arrray of all values of the expressed attribute
         var domainArray = [];
-        for (var i = 0; i<data.length; i++) {
+        for (var i = 0; i < data.length; i++) {
             var val = parseFloat(data[i][expressed]);
             //console.log("val " + val);
             domainArray.push(val);
@@ -369,19 +383,8 @@
         return colorScale;
     }; // end makeColorScale()
 
- //execute setChart() when window is loaded
- //window.onload = setChart();
-
     function setChart(csvData, colorScale) {
-        // chart frame dimentions
-        var chartWidth = window.innerWidth * 0.425,
-            chartHeight = 473,
-            leftPadding = 25,
-            rightPadding = 2,
-            topBottomPadding = 5,
-            chartInnerWidth = chartWidth - leftPadding - rightPadding,
-            chartInnerHeight = chartHeight - topBottomPadding * 2,
-            translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
+
 
         // create a second svg element to hold the bar chart
         var chart = d3.select("body")
@@ -398,10 +401,7 @@
             .attr("transform", translate);
 
 
-        // create a scale to size bars proportionally to frame
-        var yScale = d3.scaleLinear()
-            .range([463, 0])
-            .domain([0, 100]);
+
 
         // set bars for each county
         var bars = chart.selectAll(".bars")
@@ -414,31 +414,21 @@
             .attr("class", function (d) {
                 return "bars " + d.County;
             })
-            .attr("width", chartInnerWidth / csvData.length - 1)
-            .attr("x", function (d, i) {
-                return i * (chartInnerWidth / csvData.length) + leftPadding;
-            })
-            .attr("height", function (d) {
-                return 463 - yScale(parseFloat(d[expressed]));
-            })
-            .attr("y", function (d) {
-                return yScale(parseFloat(d[expressed])) + topBottomPadding;
-            })
-            .style("fill", function (d) {
-                return colorScale(d[expressed]);
-            });
+            .attr("width", chartInnerWidth / csvData.length - 1);
+
+
 
         var chartTitle = chart.append("text")
             .attr("x", 40)
             .attr("y", 40)
             .attr("class", "chartTitle")
-            .text("Percent Voter Turnout in Each County");
-            
-        var chartSubtitle = chart.append("text")
-            .attr("x", 40)
-            .attr("y", 60)
-            .attr("class", "chartSubtitle")
-            .text("Nevada 2022 General Election");
+            .text(expressed + " in Each County");
+
+        // var chartSubtitle = chart.append("text")
+        //     .attr("x", 40)
+        //     .attr("y", 60)
+        //     .attr("class", "chartSubtitle")
+        //     .text("Nevada 2022 General Election");
 
 
         // annotate bars with attribute value text
@@ -479,17 +469,20 @@
             .attr("class", "chartFrame")
             .attr("width", chartInnerWidth)
             .attr("height", chartInnerHeight)
-         .attr("transform", translate);
+            .attr("transform", translate);
 
- }; // end setChart()
+        //set bar positions, heights, and colors
+        updateChart(bars, csvData.length, colorScale);
 
-// function to create a dropdown menu for attribute selection
+    }; // end setChart()
+
+    // function to create a dropdown menu for attribute selection
     function createDropdown(csvData) {
         // add select element
         var dropdown = d3.select("body")
             .append("select")
             .attr("class", "dropdown")
-            .on("change", function() {
+            .on("change", function () {
                 changeAttribute(this.value, csvData)
             });
 
@@ -517,18 +510,61 @@
     function changeAttribute(attribute, csvData) {
         // change the expressed attribute
         expressed = attribute;
+
         // recreate the color scale
         var colorScale = makeColorScale(csvData);
 
         // recolor enumeration units
-        var nevadaCounties = d3.selectAll(".counties").style("fill", function (d) {
-            var value = d.properties[expressed];
-            if (value) {
-                return colorScale(d.properties[expressed]);
-            } else {
-                return "#ccc";
-            }
-        });
+        var nevadaCounties = d3.selectAll(".counties")
+            .style("fill", function (d) {
+                var value = d.properties[expressed];
+                if (value) {
+                    return colorScale(value);
+                } else {
+                    return "#ccc";
+                }
+            });
+
+        //Sort, resize, and recolor bars
+        var bars = d3.selectAll(".bars") // bar or bars?
+            //Sort bars
+            .sort(function (a, b) {
+                return b[expressed] - a[expressed];
+            });
+
+        updateChart(bars, csvData.length, colorScale);
+
     }; // end changeAttribute()
+
+    // function to position, size, and color bars in chart
+    function updateChart(bars, n, colorScale) {
+        
+        // position bars
+        bars.attr("x", function (d, i) {
+            return i * (chartInnerWidth / n) + leftPadding;
+        })
+            .attr("height", function (d) {
+                return 463 - yScale(parseFloat(d[expressed]));
+            })
+            .attr("y", function (d) {
+                return yScale(parseFloat(d[expressed])) + topBottomPadding;
+            })
+            .style("fill", function (d) {
+                return colorScale(d[expressed]);
+            })
+            //recolor bars
+            .style("fill", function (d) {
+                var value = d[expressed];
+                if (value) {
+                    return colorScale(value);
+                } else {
+                    return "#ccc";
+                }
+            });
+
+            // update chart title
+            var chartTitle = d3.select(".chartTitle")
+            .text(expressed + " in each County");
+    }; // end udateChart()
 
 })(); // end of wrapper function
