@@ -5,9 +5,9 @@
 
     // pseudo-global variables
     // variables for data join
-    var attrArray = ["County", "Pop2022", "AreaSqMi", "Reg_DEM", "Reg_REP", "Reg_IAP", "Reg_LPN", "Reg_Other", "Reg_NonP", "Gov_DEM", "Gov_REP", "Gov_IAP", "Gov_LPN", "Gov_None", "Sen_DEM", "Sen_REP", "Sen_IAP", "Sen_LPN", "Sen_NPP", "Sen_None", "Turnout"];
+    var attrArray = ["County", "Category", "Pop2022", "AreaSqMi", "Reg_NV_Pct", "Reg_DEM_Pct", "Reg_REP_Pct", "Reg_IAP_Pct", "Reg_LPN_Pct", "Reg_Other_Pct", "Reg_NonP_Pct", "Gov_DEM_Pct", "Gov_REP_Pct", "Gov_IAP_Pct", "Gov_LPN_Pct", "Gov_None_Pct", "Sen_DEM_Pct", "Sen_REP_Pct", "Sen_IAP_Pct", "Sen_LPN_Pct", "Sen_NPP_Pct", "Sen_None_Pct", "Turnout_Pct"];
 
-    var expressed = attrArray[20]; // initial attribute
+    var expressed = attrArray[22]; // initial attribute
     //console.log(expressed);
 
     // width and height for outer gray container
@@ -207,7 +207,7 @@
 
         // use Promise.all() to parallelize asynchronius data loading
         var promises = [];
-        promises.push(d3.csv("data/NVvoters.csv")); //load attributes from csv,
+        promises.push(d3.csv("data/NVvotersNormalized.csv")); //load attributes from csv,
         promises.push(d3.json("data/NVCounties_geog_noattr.topojson")); // load choropleth spatial data,
         promises.push(d3.json("data/States2.topojson")); // load background spatial data
         Promise.all(promises).then(callback);
@@ -419,10 +419,10 @@
                 return i * (chartInnerWidth / csvData.length) + leftPadding;
             })
             .attr("height", function (d) {
-                return 463 - yScale(parseFloat(d[expressed] * 100));
+                return 463 - yScale(parseFloat(d[expressed]));
             })
             .attr("y", function (d) {
-                return yScale(parseFloat(d[expressed] * 100)) + topBottomPadding;
+                return yScale(parseFloat(d[expressed])) + topBottomPadding;
             })
             .style("fill", function (d) {
                 return colorScale(d[expressed]);
@@ -458,10 +458,10 @@
                 return 25 + (i * fraction) + ((fraction - 1) / 2);
             })
             .attr("y", function (d) {
-                return yScale(parseFloat(d[expressed]) * 100) + 15 + topBottomPadding
+                return yScale(parseFloat(d[expressed])) + 15 + topBottomPadding
             })
             .text(function (d) {
-                return Math.round(d[expressed] * 100);
+                return Math.round(d[expressed]);
             });
 
         // create vertical axis generator
