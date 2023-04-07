@@ -312,8 +312,13 @@
                 if (geojsonKey == csvKey) {
                     // assign all attributes and values
                     attrArray.forEach(function (attr) {
-                        var val = parseFloat(csvRegion[attr]); // get csv attribute value
-                        geojsonProps[attr] = val; // assign attribute and value to geojson proerties
+                        var val = csvRegion[attr];// get csv attribute value
+                        if (typeof val === "string") {
+                            geojsonProps[attr] = val; // assign attribute and value to geojson proerties
+                        } else {
+                            geojsonProps[attr] = parseFloat(val); 
+                        }
+                                              
                     });
                 };
             };
@@ -351,7 +356,7 @@
 
 
             var desc = nvCounties.append("desc")
-            .text('{"stroke"}: "#000", "stroke-width": "0.5px"}');
+            .text('{"stroke": "#000", "stroke-width": "0.5px"}');
 
     }; // end setEnumeration Units
 
@@ -433,7 +438,7 @@
                 highlight(d);
             })
             .on("mouseout", function(event, d) {
-                dehighlight(d.properties);
+                dehighlight(d);
             });
 
             var desc = bars.append("desc")
@@ -452,28 +457,28 @@
         //     .text("Nevada 2022 General Election");
 
 
-        // annotate bars with attribute value text
-        var numbers = chart.selectAll(".numbers")
-            .data(csvData)
-            .enter()
-            .append("text")
-            .sort(function (a, b) {
-                return b[expressed] - a[expressed]
-            })
-            .attr("class", function (d) {
-                return "numbers " + d.County;
-            })
-            .attr("text-anchor", "middle")
-            .attr("x", function (d, i) {
-                var fraction = chartInnerWidth / csvData.length;
-                return 25 + (i * fraction) + ((fraction - 1) / 2);
-            })
-            .attr("y", function (d) {
-                return yScale(parseFloat(d[expressed])) + 15 + topBottomPadding
-            })
-            .text(function (d) {
-                return Math.round(d[expressed]);
-            });
+        // // annotate bars with attribute value text
+        // var numbers = chart.selectAll(".numbers")
+        //     .data(csvData)
+        //     .enter()
+        //     .append("text")
+        //     .sort(function (a, b) {
+        //         return b[expressed] - a[expressed]
+        //     })
+        //     .attr("class", function (d) {
+        //         return "numbers " + d.County;
+        //     })
+        //     .attr("text-anchor", "middle")
+        //     .attr("x", function (d, i) {
+        //         var fraction = chartInnerWidth / csvData.length;
+        //         return 25 + (i * fraction) + ((fraction - 1) / 2);
+        //     })
+        //     .attr("y", function (d) {
+        //         return yScale(parseFloat(d[expressed])) + 15 + topBottomPadding
+        //     })
+        //     .text(function (d) {
+        //         return Math.round(d[expressed]);
+        //     });
 
         // create vertical axis generator
         var yAxis = d3.axisLeft()
@@ -601,19 +606,19 @@
 // function to highlight enumeration units and bars
 function highlight(props) {
     // change stroke
-    var selected = d3.selectAll("." + props.NAME)
+    var selected = d3.selectAll("." + props.County)
     .style("stroke", "red")
     .style("stroke-width", "2");
 }; // end highlight()
 
 
 function dehighlight(props){
-    var selected = d3.selectAll("." + props.NAME)
+    var selected = d3.selectAll("." + props.County)
     .style("stroke", function(){
-        return getComputedStyle(this, "stroke")
+        return getStyle(this, "stroke")
     })
     .style("stroke-width", function(){
-        return getComputedStyle(this, "stroke-width")
+        return getStyle(this, "stroke-width")
     });
 
 } // end dehighlight()
