@@ -516,7 +516,9 @@
 
         // recolor enumeration units
         var nevadaCounties = d3.selectAll(".counties")
-            .style("fill", function (d) {
+        .transition()
+        .duration(1000)    
+        .style("fill", function (d) {
                 var value = d.properties[expressed];
                 if (value) {
                     return colorScale(value);
@@ -530,9 +532,17 @@
             //Sort bars
             .sort(function (a, b) {
                 return b[expressed] - a[expressed];
-            });
+            })
+            .transition() // add animation
+            .delay(function(d, i) {
+                return i * 20
+            })
+            .duration(500);
 
         updateChart(bars, csvData.length, colorScale);
+
+
+
 
     }; // end changeAttribute()
 
