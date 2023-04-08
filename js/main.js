@@ -226,6 +226,7 @@
         promises.push(d3.json("data/States2.topojson")); // load background spatial data
         Promise.all(promises).then(callback);
 
+        // callback - not sure why it only works within setMap() and not as its own function
         function callback(data) {
             var csvData = data[0],
                 counties = data[1],
@@ -234,46 +235,46 @@
             console.log(csvData);
             //console.log(counties);
             // console.log(state);
-
+    
             // place graticule on map
             setGraticule(map, path);
-
+    
             //translate the Nevada TopoJSON
             var states = topojson.feature(state, state.objects.States2);
             var nevadaCounties = topojson.feature(counties, counties.objects.NVCounties_geog_noattr).features; // object was called "NVCounties_geog_noattr" even tho the file was called NVCounties_geog_noattr_simp40.topojson
-
+    
             //examine the results
             // console.log(nevadaState);
             
             console.log("Counties:");
             console.log(nevadaCounties);
-
+    
             //add state outlines to the map as a background
             var nvStates = map.append("path")
                 .datum(states)
                 .attr("class", "states")
                 .attr("d", path);
-
-
-
+    
             // jon csv data to GeoJSON enumeration units
             nevadaCounties = joinData(nevadaCounties, csvData);
-
+    
             // create color Scale
             var colorScale = makeColorScale(csvData);
-
+    
             // add enumeration units to map
             setEnumerationUnits(nevadaCounties, map, path, colorScale);
-
+    
             // add coordinated visualization to map
             setChart(csvData, colorScale);
-
+    
             // add dropdown menu
             createDropdown(csvData);
-
+    
         }; // end callback()
 
     }; // end setMap()
+
+
 
     function setGraticule(map, path) {
         // I don't need a graticule background for my Nevada map, I'll use the neighboring states as the background
@@ -352,7 +353,8 @@
             })
             .on("mouseout", function(event, d) {
                 dehighlight(d.properties);
-            });
+            })
+            .on("mousemove", moveLabel);
 
 
             var desc = nvCounties.append("desc")
@@ -439,7 +441,8 @@
             })
             .on("mouseout", function(event, d) {
                 dehighlight(d);
-            });
+            })
+            .on("mousemove", moveLabel);
 
             var desc = bars.append("desc")
             .text('{"stroke": "none", "stroke-width": "0px"}');
@@ -609,6 +612,9 @@ function highlight(props) {
     var selected = d3.selectAll("." + props.County)
     .style("stroke", "red")
     .style("stroke-width", "2");
+
+    setLabel(props);
+
 }; // end highlight()
 
 
@@ -620,6 +626,9 @@ function dehighlight(props){
     .style("stroke-width", function(){
         return getStyle(this, "stroke-width")
     });
+    
+    d3.select(".infolabel")
+    .remove();
 
 } // end dehighlight()
 
@@ -632,5 +641,49 @@ function getStyle(element, styleName) {
 
     return styleObject[styleName];
 }; // end getStyle()
+
+    function setLabel(props) {
+        // label content
+        var labelAttribute = "<h1>" + Math.round(props[expressed] * 10) / 10 + "%</h1><b>" + props.County + "</b>";
+
+        //create info label div
+        var infolabel = d3.select("body")
+            .append("div")
+            .attr("class", "infolabel")
+            .attr("id", props.County + "_label")
+            .html(labelAttribute);
+
+        var CountyName = infolabel.append("div")
+            .attr("class", "labelname")
+            .html(props.name);
+    }; // end setLabel();
+
+    function moveLabel() {
+        // use coordinates of mousemove event to set label coordinates
+
+        // get width of label
+        var labelWidth = d3.select(".infolabel")
+            .node()
+            .getBoundingClientRect()
+            .width;
+
+        // use cooridanates of mousemove event to set label coordinates
+
+        var x1 = event.clientX + 10,
+            y1 = event.clientY - 75,
+        x2 = event.clientX - labelWidth - 10,
+        y2 = event.clientY + 25;
+
+        // horizontal label coordinate, testing for overflow
+        var x = event.clientX > window.innerWidth - labelWidth - 20 ? x2 : x1;
+
+        // vertical label coordinate, testing for overflow
+        var y = event.clientY < 75 ? y2 : y1;
+
+        d3.select("infolabel")
+            .style("left", x + "px")
+            .style("top", y + "px");
+    }; // end moveLabel()
+
 
 })(); // end of wrapper function
