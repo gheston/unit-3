@@ -5,31 +5,38 @@
 
     // pseudo-global variables
     // variables for data join
-    var attrArrayWithLongNames = [{fieldName:"County", longName:"County"},
+
+    var attrArray = ["County", "Category", "Pop2022", "AreaSqMi", "Reg_NV_Pct", "Reg_DEM_Pct", "Reg_REP_Pct", "Reg_IAP_Pct", "Reg_LPN_Pct", "Reg_Other_Pct", "Reg_NonP_Pct", "Gov_DEM_Pct", "Gov_REP_Pct", "Gov_IAP_Pct", "Gov_LPN_Pct", "Gov_None_Pct", "Sen_DEM_Pct", "Sen_REP_Pct", "Sen_IAP_Pct", "Sen_LPN_Pct", "Sen_NPP_Pct", "Sen_None_Pct", "Turnout_Pct"];
+
+    // array of CSV attribute names with long name aliases
+    var attrArrayWithLongNames = [
+        {fieldName:"County", longName:"County"},
      {fieldName:"Category", longName:"Urban or Rural"},
       {fieldName:"Pop2022", longName:"Population 2022"},
-       {fieldName:"AreaSqMi", longName:"Area (square miles)"},
-        {fieldName:"Reg_NV_Pct", longName:"Percent of State's Registered Voters"},
-         {fieldName:"Reg_DEM_Pct", longName:"Percent Democratic Party"},
-          {fieldName:"Reg_REP_Pct", longName:"Percent Republican Party"},
-           {fieldName:"Reg_IAP_Pct", longName:"Percent Independent American Party"},
-            {fieldName:"Reg_LPN_Pct", longName:"Percent Libertarian Party"},
-             {fieldName:"Reg_Other_Pct", longName:"Percent Other Party"},
-              {fieldName:"Reg_NonP_Pct", longName:"Percent Nonpartisan"},
-               {fieldName:"Gov_DEM_Pct", longName:"Percent Voted for Democratic Governor Candidate"},
-                {fieldName:"Gov_REP_Pct", longName:"Percent Voted for Republican Governor Canditate"},
-                 {fieldName:"Gov_IAP_Pct", longName:"Percent Voted for Independent American Governor Canditate"},
-                  {fieldName:"Gov_LPN_Pct", longName:"Percent Voted for Libertarian Governor Canditate"},
-                   {fieldName:"Gov_None_Pct", longName:"Percent Voted for 'None of These' Governor Canditates"},
-                    {fieldName:"Sen_DEM_Pct", longName:"Percent Voted for Democratic Senator Canditate"},
-                     {fieldName:"Sen_REP_Pct",longName:"Percent Voted for Republican Senator Canditate"},
-                      {fieldName:"Sen_IAP_Pct", longName:"Percent Voted for Independent American Senator Canditate"},
-                       {fieldName:"Sen_LPN_Pct", longName:"Percent Voted for Libertarian Senator Canditate"},
-                        {fieldName:"Sen_NPP_Pct", longName:"Percent Voted for Nonpartisan Senator Canditate"},
-                         {fieldName:"Sen_None_Pct", longName:"Percent Voted for 'None of These' Senator Canditates"},
-                          {fieldName:"Turnout_Pct", longName:"Percent Voter Turnout"}
-                        ];
-    var attrArray = ["County", "Category", "Pop2022", "AreaSqMi", "Reg_NV_Pct", "Reg_DEM_Pct", "Reg_REP_Pct", "Reg_IAP_Pct", "Reg_LPN_Pct", "Reg_Other_Pct", "Reg_NonP_Pct", "Gov_DEM_Pct", "Gov_REP_Pct", "Gov_IAP_Pct", "Gov_LPN_Pct", "Gov_None_Pct", "Sen_DEM_Pct", "Sen_REP_Pct", "Sen_IAP_Pct", "Sen_LPN_Pct", "Sen_NPP_Pct", "Sen_None_Pct", "Turnout_Pct"];
+       {fieldName:"AreaSqMi", longName:"Area (square miles)"},{ fieldName: "Reg_NV_Pct", longName: "% of State's Registered Voters" },
+        { fieldName: "Reg_DEM_Pct", longName: "% Democratic Party Voters" },
+        { fieldName: "Reg_REP_Pct", longName: "% Republican Party Voters" },
+        { fieldName: "Reg_IAP_Pct", longName: "% Independent American Party Voters" },
+        { fieldName: "Reg_LPN_Pct", longName: "% Libertarian Party Voters" },
+        { fieldName: "Reg_Other_Pct", longName: "% Other Party Voters" },
+        { fieldName: "Reg_NonP_Pct", longName: "% Nonpartisan Voters" },
+        { fieldName: "Gov_DEM_Pct", longName: "% Voted for Democratic Governor Candidate" },
+        { fieldName: "Gov_REP_Pct", longName: "% Voted for Republican Governor Canditate" },
+        { fieldName: "Gov_IAP_Pct", longName: "% Voted for Independent American Governor Canditate" },
+        { fieldName: "Gov_LPN_Pct", longName: "% Voted for Libertarian Governor Canditate" },
+        { fieldName: "Gov_None_Pct", longName: "% Voted for 'None of These' Governor Canditates" },
+        { fieldName: "Sen_DEM_Pct", longName: "% Voted for Democratic Senator Canditate" },
+        { fieldName: "Sen_REP_Pct", longName: "% Voted for Republican Senator Canditate" },
+        { fieldName: "Sen_IAP_Pct", longName: "% Voted for Independent American Senator Canditate" },
+        { fieldName: "Sen_LPN_Pct", longName: "% Voted for Libertarian Senator Canditate" },
+        { fieldName: "Sen_NPP_Pct", longName: "% Voted for Nonpartisan Senator Canditate" },
+        { fieldName: "Sen_None_Pct", longName: "% Voted for 'None of These' Senator Canditates" },
+        { fieldName: "Turnout_Pct", longName: "% Voter Turnout" }
+    ];
+
+// array of variables without the descriptiive attributes
+var attrArrayShorter = ["Reg_NV_Pct", "Reg_DEM_Pct", "Reg_REP_Pct", "Reg_IAP_Pct", "Reg_LPN_Pct", "Reg_Other_Pct", "Reg_NonP_Pct", "Gov_DEM_Pct", "Gov_REP_Pct", "Gov_IAP_Pct", "Gov_LPN_Pct", "Gov_None_Pct", "Sen_DEM_Pct", "Sen_REP_Pct", "Sen_IAP_Pct", "Sen_LPN_Pct", "Sen_NPP_Pct", "Sen_None_Pct", "Turnout_Pct"];
+
 
     var expressed = attrArray[22]; // initial attribute
     //console.log(expressed);
@@ -108,7 +115,7 @@
             //examine the results
             // console.log(nevadaState);
 
-            console.log("Counties:", nevadaCounties);
+            // console.log("Counties:", nevadaCounties);
 
 
             //add state outlines to the map as a background
@@ -387,14 +394,15 @@
 
         // add attribute name options
         var attrOptions = dropdown.selectAll("attrOptions")
-            .data(attrArray)
+            .data(attrArrayShorter)
             .enter()
             .append("option")
             .attr("value", function (d) {
-                return d
+                                return d;
             })
             .text(function (d) {
-                return d
+                var fieldNameIndex = attrArrayWithLongNames.findIndex(item => item.fieldName === d);
+               return attrArrayWithLongNames[fieldNameIndex].longName
             });
 
     }; // end createDropdown()
@@ -466,10 +474,10 @@
             });
 
 
-            // get the index of the expresed fieldName from attrArrayWithLongNames
-            var expressedIndex = attrArrayWithLongNames.findIndex(item => item.fieldName === expressed);
-            console.log(expressed, ": Index", expressedIndex);
-            console.log("long name: ", attrArrayWithLongNames[expressedIndex].longName);
+        // get the index of the expresed fieldName from attrArrayWithLongNames
+        var expressedIndex = attrArrayWithLongNames.findIndex(item => item.fieldName === expressed);
+        // console.log(expressed, ": Index", expressedIndex);
+        // console.log("long name: ", attrArrayWithLongNames[expressedIndex].longName);
 
 
         // update chart title
@@ -539,13 +547,13 @@
 
     function moveLabel() {
         // use coordinates of mousemove event to set label coordinates
-        
+
         // get width of label
         var labelWidth = d3.select(".infolabel")
             .node()
             .getBoundingClientRect()
             .width;
-              
+
         // use cooridanates of mousemove event to set label coordinates
 
         var x1 = event.clientX + 10,
