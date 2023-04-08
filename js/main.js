@@ -74,41 +74,41 @@
             console.log(csvData);
             //console.log(counties);
             // console.log(state);
-    
+
             // place graticule on map
             setGraticule(map, path);
-    
+
             //translate the Nevada TopoJSON
             var states = topojson.feature(state, state.objects.States2);
             var nevadaCounties = topojson.feature(counties, counties.objects.NVCounties_geog_noattr).features; // object was called "NVCounties_geog_noattr" even tho the file was called NVCounties_geog_noattr_simp40.topojson
-    
+
             //examine the results
             // console.log(nevadaState);
-            
+
             console.log("Counties:");
             console.log(nevadaCounties);
-    
+
             //add state outlines to the map as a background
             var nvStates = map.append("path")
                 .datum(states)
                 .attr("class", "states")
                 .attr("d", path);
-    
+
             // jon csv data to GeoJSON enumeration units
             nevadaCounties = joinData(nevadaCounties, csvData);
-    
+
             // create color Scale
             var colorScale = makeColorScale(csvData);
-    
+
             // add enumeration units to map
             setEnumerationUnits(nevadaCounties, map, path, colorScale);
-    
+
             // add coordinated visualization to map
             setChart(csvData, colorScale);
-    
+
             // add dropdown menu
             createDropdown(csvData);
-    
+
         }; // end callback()
 
     }; // end setMap()
@@ -156,9 +156,9 @@
                         if (typeof val === "string") {
                             geojsonProps[attr] = val; // assign attribute and value to geojson proerties
                         } else {
-                            geojsonProps[attr] = parseFloat(val); 
+                            geojsonProps[attr] = parseFloat(val);
                         }
-                                              
+
                     });
                 };
             };
@@ -177,7 +177,6 @@
             .append("path")
             .attr("class", function (d) {
                 var countyName = countyNameNoSpace(d.properties.NAME);
-                //countyName = countyName.replace(/\s+/g, '');
                 return "counties " + countyName;
             })
             .attr("d", path)
@@ -189,16 +188,16 @@
                     return "#ccc";
                 }
             })
-            .on("mouseover", function(event, d) {
+            .on("mouseover", function (event, d) {
                 highlight(d.properties);
             })
-            .on("mouseout", function(event, d) {
+            .on("mouseout", function (event, d) {
                 dehighlight(d.properties);
             })
             .on("mousemove", moveLabel);
 
 
-            var desc = nvCounties.append("desc")
+        var desc = nvCounties.append("desc")
             .text('{"stroke": "#000", "stroke-width": "0.5px"}');
 
     }; // end setEnumeration Units
@@ -273,20 +272,20 @@
             .sort(function (a, b) {
                 return b[expressed] - a[expressed]
             })
-            .attr("class", function(d) {
+            .attr("class", function (d) {
                 var countyName = countyNameNoSpace(d.County);
-                return "bars " + countyName; 
+                return "bars " + countyName;
             })
             .attr("width", chartInnerWidth / csvData.length - 1)
-            .on("mouseover", function(event, d) {
+            .on("mouseover", function (event, d) {
                 highlight(d);
             })
-            .on("mouseout", function(event, d) {
+            .on("mouseout", function (event, d) {
                 dehighlight(d);
             })
             .on("mousemove", moveLabel);
 
-            var desc = bars.append("desc")
+        var desc = bars.append("desc")
             .text('{"stroke": "none", "stroke-width": "0px"}');
 
         var chartTitle = chart.append("text")
@@ -387,9 +386,9 @@
 
         // recolor enumeration units
         var nevadaCounties = d3.selectAll(".counties")
-        .transition()
-        .duration(1000)    
-        .style("fill", function (d) {
+            .transition()
+            .duration(1000)
+            .style("fill", function (d) {
                 var value = d.properties[expressed];
                 if (value) {
                     return colorScale(value);
@@ -405,7 +404,7 @@
                 return b[expressed] - a[expressed];
             })
             .transition() // add animation
-            .delay(function(d, i) {
+            .delay(function (d, i) {
                 return i * 20
             })
             .duration(500);
@@ -419,7 +418,7 @@
 
     // function to position, size, and color bars in chart
     function updateChart(bars, n, colorScale) {
-        
+
         // position bars
         bars.attr("x", function (d, i) {
             return i * (chartInnerWidth / n) + leftPadding;
@@ -443,62 +442,64 @@
                 }
             });
 
-            // update chart title
-            var chartTitle = d3.select(".chartTitle")
+        // update chart title
+        var chartTitle = d3.select(".chartTitle")
             .text(expressed + " in each County");
     }; // end udateChart()
 
-// function to highlight enumeration units and bars
-function highlight(props) {
-    // change stroke
-   
-    var countyName = countyNameNoSpace(props.County);
+    // function to highlight enumeration units and bars
+    function highlight(props) {
+        // change stroke
 
-    var selected = d3.selectAll("." + countyName)
-    .style("stroke", "red")
-    .style("stroke-width", "2");
+        var countyName = countyNameNoSpace(props.County);
 
-    setLabel(props);
+        var selected = d3.selectAll("." + countyName)
+            .style("stroke", "red")
+            .style("stroke-width", "2");
 
-}; // end highlight()
+        setLabel(props);
+
+    }; // end highlight()
 
 
-function dehighlight(props){
-    
-    var countyName = countyNameNoSpace(props.County);
-    
-    var selected = d3.selectAll("." + countyName)
-    .style("stroke", function(){
-        return getStyle(this, "stroke")
-    })
-    .style("stroke-width", function(){
-        return getStyle(this, "stroke-width")
-    });
-    
-    d3.select(".infolabel")
-    .remove();
+    function dehighlight(props) {
 
-} // end dehighlight()
+        var countyName = countyNameNoSpace(props.County);
 
-function getStyle(element, styleName) {
-    var styleText = d3.select(element)
-    .select("desc")
-    .text();
+        var selected = d3.selectAll("." + countyName)
+            .style("stroke", function () {
+                return getStyle(this, "stroke")
+            })
+            .style("stroke-width", function () {
+                return getStyle(this, "stroke-width")
+            });
 
-    var styleObject = JSON.parse(styleText);
+        d3.select(".infolabel")
+            .remove();
 
-    return styleObject[styleName];
-}; // end getStyle()
+    } // end dehighlight()
+
+    function getStyle(element, styleName) {
+        var styleText = d3.select(element)
+            .select("desc")
+            .text();
+
+        var styleObject = JSON.parse(styleText);
+
+        return styleObject[styleName];
+    }; // end getStyle()
 
     function setLabel(props) {
         // label content
         var labelAttribute = "<h1>" + Math.round(props[expressed] * 10) / 10 + "%</h1><b>" + props.County + "</b>";
 
+        var countyNameWithoutSpace = countyNameNoSpace(props.County);
+
         //create info label div
         var infolabel = d3.select("body")
             .append("div")
             .attr("class", "infolabel")
-            .attr("id", props.County + "_label")
+            .attr("id", countyNameWithoutSpace + "_label")
             .html(labelAttribute);
 
         var CountyName = infolabel.append("div")
@@ -508,19 +509,20 @@ function getStyle(element, styleName) {
 
     function moveLabel() {
         // use coordinates of mousemove event to set label coordinates
-
+        console.log("moveLabel called");
         // get width of label
         var labelWidth = d3.select(".infolabel")
             .node()
             .getBoundingClientRect()
             .width;
-
+        console.log("labelWidth width: ", labelWidth.width);
+        
         // use cooridanates of mousemove event to set label coordinates
 
         var x1 = event.clientX + 10,
             y1 = event.clientY - 75,
-        x2 = event.clientX - labelWidth - 10,
-        y2 = event.clientY + 25;
+            x2 = event.clientX - labelWidth - 10,
+            y2 = event.clientY + 25;
 
         // horizontal label coordinate, testing for overflow
         var x = event.clientX > window.innerWidth - labelWidth - 20 ? x2 : x1;
@@ -528,15 +530,15 @@ function getStyle(element, styleName) {
         // vertical label coordinate, testing for overflow
         var y = event.clientY < 75 ? y2 : y1;
 
-        d3.select("infolabel")
+        d3.select(".infolabel")
             .style("left", x + "px")
             .style("top", y + "px");
     }; // end moveLabel()
 
-// function to strip spaces from county names    
-function countyNameNoSpace(countyNameWithSpace) {
-    var countyName = countyNameWithSpace.replace(/\s+/g, '');
-    return countyName;
-}
+    // function to strip spaces from county names    
+    function countyNameNoSpace(countyNameWithSpace) {
+        var countyName = countyNameWithSpace.replace(/\s+/g, '');
+        return countyName;
+    } // end countyNameNoSpace()
 
 })(); // end of wrapper function
