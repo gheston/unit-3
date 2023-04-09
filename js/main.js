@@ -10,10 +10,10 @@
 
     // array of CSV attribute names with long name aliases
     var attrArrayWithLongNames = [
-        {fieldName:"County", longName:"County"},
-     {fieldName:"Category", longName:"Urban or Rural"},
-      {fieldName:"Pop2022", longName:"Population 2022"},
-       {fieldName:"AreaSqMi", longName:"Area (square miles)"},{ fieldName: "Reg_NV_Pct", longName: "% of State's Registered Voters" },
+        { fieldName: "County", longName: "County" },
+        { fieldName: "Category", longName: "Urban or Rural" },
+        { fieldName: "Pop2022", longName: "Population 2022" },
+        { fieldName: "AreaSqMi", longName: "Area (square miles)" }, { fieldName: "Reg_NV_Pct", longName: "% of State's Registered Voters" },
         { fieldName: "Reg_DEM_Pct", longName: "% Democratic Party Voters" },
         { fieldName: "Reg_REP_Pct", longName: "% Republican Party Voters" },
         { fieldName: "Reg_IAP_Pct", longName: "% Independent American Party Voters" },
@@ -21,24 +21,24 @@
         { fieldName: "Reg_Other_Pct", longName: "% Other Party Voters" },
         { fieldName: "Reg_NonP_Pct", longName: "% Nonpartisan Voters" },
         { fieldName: "Gov_DEM_Pct", longName: "% Voted for Democratic Governor Candidate" },
-        { fieldName: "Gov_REP_Pct", longName: "% Voted for Republican Governor Canditate" },
-        { fieldName: "Gov_IAP_Pct", longName: "% Voted for Independent American Governor Canditate" },
-        { fieldName: "Gov_LPN_Pct", longName: "% Voted for Libertarian Governor Canditate" },
-        { fieldName: "Gov_None_Pct", longName: "% Voted for 'None of These' Governor Canditates" },
-        { fieldName: "Sen_DEM_Pct", longName: "% Voted for Democratic Senator Canditate" },
-        { fieldName: "Sen_REP_Pct", longName: "% Voted for Republican Senator Canditate" },
-        { fieldName: "Sen_IAP_Pct", longName: "% Voted for Independent American Senator Canditate" },
-        { fieldName: "Sen_LPN_Pct", longName: "% Voted for Libertarian Senator Canditate" },
-        { fieldName: "Sen_NPP_Pct", longName: "% Voted for Nonpartisan Senator Canditate" },
-        { fieldName: "Sen_None_Pct", longName: "% Voted for 'None of These' Senator Canditates" },
+        { fieldName: "Gov_REP_Pct", longName: "% Voted for Republican Governor Candidate" },
+        { fieldName: "Gov_IAP_Pct", longName: "% Voted for Independent American Governor Candidate" },
+        { fieldName: "Gov_LPN_Pct", longName: "% Voted for Libertarian Governor Candidate" },
+        { fieldName: "Gov_None_Pct", longName: "% Voted for 'None of These' Governor Candidates" },
+        { fieldName: "Sen_DEM_Pct", longName: "% Voted for Democratic Senator Candidate" },
+        { fieldName: "Sen_REP_Pct", longName: "% Voted for Republican Senator Candidate" },
+        { fieldName: "Sen_IAP_Pct", longName: "% Voted for Independent American Senator Candidate" },
+        { fieldName: "Sen_LPN_Pct", longName: "% Voted for Libertarian Senator Candidate" },
+        { fieldName: "Sen_NPP_Pct", longName: "% Voted for Nonpartisan Senator Candidate" },
+        { fieldName: "Sen_None_Pct", longName: "% Voted for 'None of These' Senator Candidates" },
         { fieldName: "Turnout_Pct", longName: "% Voter Turnout" }
     ];
 
-// array of variables without the descriptiive attributes
-var attrArrayShorter = ["Reg_NV_Pct", "Reg_DEM_Pct", "Reg_REP_Pct", "Reg_IAP_Pct", "Reg_LPN_Pct", "Reg_Other_Pct", "Reg_NonP_Pct", "Gov_DEM_Pct", "Gov_REP_Pct", "Gov_IAP_Pct", "Gov_LPN_Pct", "Gov_None_Pct", "Sen_DEM_Pct", "Sen_REP_Pct", "Sen_IAP_Pct", "Sen_LPN_Pct", "Sen_NPP_Pct", "Sen_None_Pct", "Turnout_Pct"];
+    // array of variables without the descriptiive attributes
+    var attrArrayShorter = ["Reg_NV_Pct", "Reg_DEM_Pct", "Reg_REP_Pct", "Reg_IAP_Pct", "Reg_LPN_Pct", "Reg_Other_Pct", "Reg_NonP_Pct", "Gov_DEM_Pct", "Gov_REP_Pct", "Gov_IAP_Pct", "Gov_LPN_Pct", "Gov_None_Pct", "Sen_DEM_Pct", "Sen_REP_Pct", "Sen_IAP_Pct", "Sen_LPN_Pct", "Sen_NPP_Pct", "Sen_None_Pct", "Turnout_Pct"];
 
 
-    var expressed = attrArray[22]; // initial attribute
+    var expressed = attrArray[4]; // initial attribute
     //console.log(expressed);
 
     // width and height for outer gray container
@@ -300,7 +300,7 @@ var attrArrayShorter = ["Reg_NV_Pct", "Reg_DEM_Pct", "Reg_REP_Pct", "Reg_IAP_Pct
             .enter()
             .append("rect")
             .sort(function (a, b) {
-                return b[expressed] - a[expressed]
+                return b["Pop2022"] - a["Pop2022"]; // I want to keep the sort in population order
             })
             .attr("class", function (d) {
                 var countyName = countyNameNoSpace(d.County);
@@ -320,39 +320,56 @@ var attrArrayShorter = ["Reg_NV_Pct", "Reg_DEM_Pct", "Reg_REP_Pct", "Reg_IAP_Pct
 
         var chartTitle = chart.append("text")
             .attr("x", 40)
-            .attr("y", 40)
+            .attr("y", 20)
             .attr("class", "chartTitle")
             .text(expressed + " in Each County");
 
-        // var chartSubtitle = chart.append("text")
-        //     .attr("x", 40)
-        //     .attr("y", 60)
-        //     .attr("class", "chartSubtitle")
-        //     .text("Nevada 2022 General Election");
+        var countyLabels = chart.selectAll(".countyLabels")
+            .data(csvData)
+            .enter()
+            .append("text")
+            .sort(function (a, b) {
+                return b["Pop2022"] - a["Pop2022"]
+            })
+            .attr("class", "countyLabel")
+            .attr("x", function (d, i) {
+                var fraction = chartInnerWidth / csvData.length;
+                return 25 + (i * fraction) + ((fraction - 1) / 2);
+            })
+            .attr("y", 30)
+            .text(function (d) {
+                return d["County"]
+            });
 
 
-        // // annotate bars with attribute value text
-        // var numbers = chart.selectAll(".numbers")
-        //     .data(csvData)
-        //     .enter()
-        //     .append("text")
-        //     .sort(function (a, b) {
-        //         return b[expressed] - a[expressed]
-        //     })
-        //     .attr("class", function (d) {
-        //         return "numbers " + d.County;
-        //     })
-        //     .attr("text-anchor", "middle")
-        //     .attr("x", function (d, i) {
-        //         var fraction = chartInnerWidth / csvData.length;
-        //         return 25 + (i * fraction) + ((fraction - 1) / 2);
-        //     })
-        //     .attr("y", function (d) {
-        //         return yScale(parseFloat(d[expressed])) + 15 + topBottomPadding
-        //     })
-        //     .text(function (d) {
-        //         return Math.round(d[expressed]);
-        //     });
+        // annotate bars with attribute value text
+        var numbers = chart.selectAll(".numbers")
+            .data(csvData)
+            .enter()
+            .append("text")
+            .sort(function (a, b) {
+                return b["Pop2022"] - a["Pop2022"] // sort by population
+                //return b[expressed] - a[expressed]
+            })
+            // .attr("class", function (d) {
+            //     return "numbers " + d.County;
+            // })
+            .attr("class", "numbers") // take out the county name from the class, then they don't get highlighted on mouseover
+            .attr("text-anchor", "middle")
+            .attr("x", function (d, i) {
+                var fraction = chartInnerWidth / csvData.length;
+                return 25 + (i * fraction) + ((fraction - 1) / 2);
+            })
+            .attr("y", function (d) {
+                return yScale(parseFloat(d[expressed])) + 15 + topBottomPadding
+            })
+            .text(function (d) {
+                return Math.round(d[expressed]);
+            });
+
+            // var numDesc = numbers.append("desc")
+            // .text('{"stroke": "none", "stroke-width": "0px"}');
+
 
         // create vertical axis generator
         var yAxis = d3.axisLeft()
@@ -372,7 +389,7 @@ var attrArrayShorter = ["Reg_NV_Pct", "Reg_DEM_Pct", "Reg_REP_Pct", "Reg_IAP_Pct
             .attr("transform", translate);
 
         //set bar positions, heights, and colors
-        updateChart(bars, csvData.length, colorScale);
+        updateChart(bars, csvData.length, colorScale, numbers);
 
     }; // end setChart()
 
@@ -398,11 +415,11 @@ var attrArrayShorter = ["Reg_NV_Pct", "Reg_DEM_Pct", "Reg_REP_Pct", "Reg_IAP_Pct
             .enter()
             .append("option")
             .attr("value", function (d) {
-                                return d;
+                return d;
             })
             .text(function (d) {
                 var fieldNameIndex = attrArrayWithLongNames.findIndex(item => item.fieldName === d);
-               return attrArrayWithLongNames[fieldNameIndex].longName
+                return attrArrayWithLongNames[fieldNameIndex].longName
             });
 
     }; // end createDropdown()
@@ -432,7 +449,8 @@ var attrArrayShorter = ["Reg_NV_Pct", "Reg_DEM_Pct", "Reg_REP_Pct", "Reg_IAP_Pct
         var bars = d3.selectAll(".bars") // bar or bars?
             //Sort bars
             .sort(function (a, b) {
-                return b[expressed] - a[expressed];
+                return b["Pop2022"] - a["Pop2022"];
+                //return b[expressed] - a[expressed];
             })
             .transition() // add animation
             .delay(function (d, i) {
@@ -440,15 +458,23 @@ var attrArrayShorter = ["Reg_NV_Pct", "Reg_DEM_Pct", "Reg_REP_Pct", "Reg_IAP_Pct
             })
             .duration(500);
 
-        updateChart(bars, csvData.length, colorScale);
-
-
-
+        var numbers = d3.selectAll(".numbers")
+            // sort numbers
+            .sort(function (a, b) {
+                return b["Pop2022"] - a["Pop2022"];
+                //return b[expressed] - a[expressed];
+            })
+            .transition()
+            .delay(function (d, i) {
+                return i * 20
+            })
+            .duration(500);
+        updateChart(bars, csvData.length, colorScale, numbers);
 
     }; // end changeAttribute()
 
     // function to position, size, and color bars in chart
-    function updateChart(bars, n, colorScale) {
+    function updateChart(bars, n, colorScale, numbers) {
 
         // position bars
         bars.attr("x", function (d, i) {
@@ -473,6 +499,26 @@ var attrArrayShorter = ["Reg_NV_Pct", "Reg_DEM_Pct", "Reg_REP_Pct", "Reg_IAP_Pct
                 }
             });
 
+        // annotate bars with attribute value text, 
+
+        numbers.attr("x", function (d, i) {
+            var fraction = chartInnerWidth / n;
+            return 25 + (i * fraction) + ((fraction - 1) / 2);
+        })
+            .attr("y", function (d) {
+                if (d[expressed] > 6) { // if % <6 then the numbers are too low; move them up a bit
+                    return yScale(parseFloat(d[expressed])) + 15 + topBottomPadding;
+                } else {
+                    return yScale(parseFloat(d[expressed])) - 5 + topBottomPadding;
+                }
+            })
+            .text(function (d) {
+                if (d[expressed] > 1) {
+                    return Math.round(d[expressed]);
+                } else {
+                    return "<1"; // if <1% display as "<1" because the bars are so small
+                }
+            });
 
         // get the index of the expresed fieldName from attrArrayWithLongNames
         var expressedIndex = attrArrayWithLongNames.findIndex(item => item.fieldName === expressed);
@@ -495,10 +541,15 @@ var attrArrayShorter = ["Reg_NV_Pct", "Reg_DEM_Pct", "Reg_REP_Pct", "Reg_IAP_Pct
             .style("stroke", "red")
             .style("stroke-width", "2");
 
+            // var selected = d3.selectAll(".counties" + countyName)
+            // .style("stroke", "red")
+            // .style("stroke-width", "2");
+
+
+
         setLabel(props);
 
     }; // end highlight()
-
 
     function dehighlight(props) {
 
@@ -506,13 +557,21 @@ var attrArrayShorter = ["Reg_NV_Pct", "Reg_DEM_Pct", "Reg_REP_Pct", "Reg_IAP_Pct
 
         var selected = d3.selectAll("." + countyName)
             .style("stroke", function () {
-                return getStyle(this, "stroke")
+                return getStyle(this, "stroke");
             })
             .style("stroke-width", function () {
-                return getStyle(this, "stroke-width")
+                return getStyle(this, "stroke-width");
             });
 
-        d3.select(".infolabel")
+            // var selected = d3.selectAll(".counties" + countyName)
+            // .style("stroke", function () {
+            //     return getStyle(this, "stroke");
+            // })
+            // .style("stroke-width", function () {
+            //     return getStyle(this, "stroke-width");
+            // });
+
+            d3.select(".infolabel") // remove the floating label
             .remove();
 
     } // end dehighlight()
@@ -523,6 +582,7 @@ var attrArrayShorter = ["Reg_NV_Pct", "Reg_DEM_Pct", "Reg_REP_Pct", "Reg_IAP_Pct
             .text();
 
         var styleObject = JSON.parse(styleText);
+        //console.log(styleObject);
 
         return styleObject[styleName];
     }; // end getStyle()

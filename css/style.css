@@ -49,7 +49,7 @@
 
 
 .numbers {
-    fill: white;
+    /* fill: white; */
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     
 }
@@ -126,4 +126,11 @@ option {
     display: inline-block;
     line-height: 1em;
 
+}
+
+.countyLabel {
+    fill: blue;
+    font-size: 0.8em;
+    writing-mode: vertical-lr;
+    
 }
