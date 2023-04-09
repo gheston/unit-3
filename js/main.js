@@ -52,7 +52,7 @@
         topBottomPadding = 5,
         chartInnerWidth = chartWidth - leftPadding - rightPadding,
         chartInnerHeight = chartHeight - topBottomPadding * 2,
-        translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
+        translate = "translate(" + leftPadding + "," + (topBottomPadding) + ")";
 
     // create a scale to size bars proportionally to frame
     var yScale = d3.scaleLinear()
@@ -135,6 +135,9 @@
 
             // add coordinated visualization to map
             setChart(csvData, colorScale);
+
+            // add charat's x axis
+            makeXaxis(csvData);
 
             // add dropdown menu
             createDropdown(csvData);
@@ -324,22 +327,7 @@
             .attr("class", "chartTitle")
             .text(expressed + " in Each County");
 
-        var countyLabels = chart.selectAll(".countyLabels")
-            .data(csvData)
-            .enter()
-            .append("text")
-            .sort(function (a, b) {
-                return b["Pop2022"] - a["Pop2022"]
-            })
-            .attr("class", "countyLabel")
-            .attr("x", function (d, i) {
-                var fraction = chartInnerWidth / csvData.length;
-                return 25 + (i * fraction) + ((fraction - 1) / 2);
-            })
-            .attr("y", 30)
-            .text(function (d) {
-                return d["County"]
-            });
+
 
 
         // annotate bars with attribute value text
@@ -637,5 +625,32 @@
         var countyName = countyNameWithSpace.replace(/\s+/g, '');
         return countyName;
     } // end countyNameNoSpace()
+
+function makeXaxis(csvData) {
+        // create a second svg element to hold the bar chart
+        var xAxis = d3.select("body")
+            .append("svg")
+            .attr("width", chartWidth)
+            .attr("height", chartHeight)
+            .attr("class", "chartXaxis");
+           
+            var countyLabels = xAxis.selectAll(".countyLabels")
+            .data(csvData)
+            .enter()
+            .append("text")
+            .sort(function (a, b) {
+                return b["Pop2022"] - a["Pop2022"]
+            })
+            .attr("class", "countyLabel")
+            .attr("x", function (d, i) {
+                var fraction = chartInnerWidth / csvData.length;
+                return 25 + (i * fraction) + ((fraction - 1) / 2);
+            })
+            .attr("y", 30)
+            .text(function (d) {
+                return d["County"]
+            });
+
+} // end makeXaxis
 
 })(); // end of wrapper function

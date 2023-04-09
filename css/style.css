@@ -134,3 +134,8 @@ option {
     writing-mode: vertical-lr;
     
 }
+
+.chartXaxis {
+    float: right;
+    margin: 0px 20px 0 0;
+}
