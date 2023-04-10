@@ -137,3 +137,7 @@ h1, h3 {
 .barchart {
     display: inline-block;
 }
+
+footer {
+    font-size: 0.8em;
+}

@@ -147,7 +147,7 @@
         // create graticule generator
         var graticule = d3.geoGraticule()
             .step([2, 2]) // place graticule lines ever 2 degrees of longitude and latitude
-            .extent([[-126, 44], [-110, 34]]); // extents of NV
+            .extent([[-126, 44], [-109, 34]]); // extents of NV
 
         // add a gray background to the graticule
         var gratBackground = map.append("path")
