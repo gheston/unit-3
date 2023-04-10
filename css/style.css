@@ -2,6 +2,9 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
+h1, h3 {
+    text-align: center;
+}
 
 .axis path,
 .axis line {
@@ -54,7 +57,7 @@ body {
 }
 
 .chartBackground {
-    fill: #f7b8b8;
+    fill: white;
     stroke: #999;
     stroke-width: 1px;
     shape-rendering: crispEdges;
@@ -94,6 +97,7 @@ body {
     padding: 2px;
     border: 1px solid #999;
     box-shadow: 2px 2px 4px #999;
+    font-family: 'Poppins', sans-serif;
 }
 
 .option {
@@ -116,6 +120,13 @@ body {
     display: inline-block;
     line-height: 1em;
 
+}
+
+.numbers {
+    text-shadow: -1px 1px rgba(255, 255, 255, 0.5), 
+    1px 1px rgba(255, 255, 255, 0.5),
+    1px -1px rgba(255, 255, 255, 0.5),
+    -1px -1px rgba(255, 255, 255, 0.5);
 }
 
 .countyLabel {

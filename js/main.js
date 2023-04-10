@@ -231,13 +231,7 @@
 
     // function to create color scale generator
     function makeColorScale(data) {
-        var colorClasses = [
-            "#f1eef6",
-            "#bdc9e1",
-            "#74a9cf",
-            "#2b8cbe",
-            "#045a8d"
-        ];
+        var colorClasses = ['#ffffcc','#c2e699','#78c679','#31a354','#006837']; // ColorBrewer.org yellow-green
 
         // create color scale generator
         var colorScale = d3.scaleThreshold()
@@ -317,9 +311,9 @@
 
         var chartTitle = chart.append("text")
             .attr("x", 40)
-            .attr("y", 20)
+            .attr("y", 40)
             .attr("class", "chartTitle")
-            .text(expressed + " in Each County");
+            .text(expressed);
 
                         
         // annotate bars with attribute value text
@@ -361,7 +355,7 @@
         var chartFrame = chart.append("rect")
             .attr("class", "chartFrame")
             .attr("width", chartInnerWidth)
-            .attr("height", chartInnerHeight)
+            .attr("height", chartInnerHeight + 100)
             .attr("transform", translate);
 
         //set bar positions, heights, and colors
@@ -504,7 +498,7 @@
 
         // update chart title
         var chartTitle = d3.select(".chartTitle")
-            .text(attrArrayWithLongNames[expressedIndex].longName + " in each County");
+            .text(attrArrayWithLongNames[expressedIndex].longName);
     }; // end udateChart()
 
     // function to highlight enumeration units and bars
@@ -565,7 +559,7 @@
 
     function setLabel(props) {
         // label content
-        var labelAttribute = "<h1>" + Math.round(props[expressed] * 10) / 10 + "%</h1><b>" + props.County + "</b>";
+        var labelAttribute = Math.round(props[expressed] * 10) / 10 + "%<b>  " + props.County + "</b>";
 
         var countyNameWithoutSpace = countyNameNoSpace(props.County);
 
