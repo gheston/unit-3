@@ -42,7 +42,7 @@
     //console.log(expressed);
 
     // width and height for outer gray container
-    var w = 900, h = 500;
+    //var w = 900, h = 500;
 
     // chart frame dimentions
     var chartWidth = window.innerWidth * 0.425,
@@ -51,12 +51,12 @@
         rightPadding = 2,
         topBottomPadding = 5,
         chartInnerWidth = chartWidth - leftPadding - rightPadding,
-        chartInnerHeight = chartHeight - topBottomPadding * 2,
+        chartInnerHeight = chartHeight - (topBottomPadding * 2) - 100,
         translate = "translate(" + leftPadding + "," + (topBottomPadding) + ")";
 
     // create a scale to size bars proportionally to frame
     var yScale = d3.scaleLinear()
-        .range([463, 0])
+        .range([363, 0])
         .domain([0, 100]);
 
 
@@ -469,7 +469,7 @@
             return i * (chartInnerWidth / n) + leftPadding;
         })
             .attr("height", function (d) {
-                return 463 - yScale(parseFloat(d[expressed]));
+                return 363 - yScale(parseFloat(d[expressed]));
             })
             .attr("y", function (d) {
                 return yScale(parseFloat(d[expressed])) + topBottomPadding;
@@ -631,7 +631,7 @@ function makeXaxis(csvData) {
         var xAxis = d3.select(".barchart")
             .append("svg")
             .attr("width", chartWidth)
-            .attr("height", chartHeight)
+            .attr("height", 100)
             .attr("class", "chartXaxis");
            
             var countyLabels = xAxis.selectAll(".countyLabels")
@@ -646,7 +646,7 @@ function makeXaxis(csvData) {
                 var fraction = chartInnerWidth / csvData.length;
                 return 25 + (i * fraction) + ((fraction - 1) / 2);
             })
-            .attr("y", 30)
+            .attr("y", 10)
             .text(function (d) {
                 return d["County"]
             });

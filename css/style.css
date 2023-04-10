@@ -94,9 +94,13 @@
 
 }
 
+.nevadaMap {
+    position: relative;
+}
+
 .dropdown {
     position: absolute;
-    top: 450px;
+    top: 440px;
     left: 35px;
     z-index: 10;
     font-family: sans-serif;
@@ -106,7 +110,7 @@
     box-shadow: 2px 2px 4px #999;
 }
 
-option {
+.option {
     font-weight: normal;
 }
 
@@ -135,7 +139,12 @@ option {
     
 }
 
+.barchart {
+    display: inline-block;
+}
+
 .chartXaxis {
     float: right;
+    display: block;
     margin: 0px 20px 0 0;
 }
