@@ -43,7 +43,7 @@
 }
 
 .chart {
-    float: right;
+    /* float: right; */
     margin: 10px 20px 0 0;
 }
 
@@ -96,6 +96,7 @@
 
 .nevadaMap {
     position: relative;
+    /* display: inline-block; */
 }
 
 .dropdown {
@@ -136,15 +137,11 @@
     fill: blue;
     font-size: 0.8em;
     writing-mode: vertical-lr;
-    
-}
-
-.barchart {
-    display: inline-block;
 }
 
 .chartXaxis {
-    float: right;
-    display: block;
+    /*float: right; */
+    /* display: block; */
+    /* position: absolute; */
     margin: 0px 20px 0 0;
 }

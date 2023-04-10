@@ -149,11 +149,11 @@
 
 
     function setGraticule(map, path) {
-        // I don't need a graticule background for my Nevada map, I'll use the neighboring states as the background
 
         // create graticule generator
         var graticule = d3.geoGraticule()
             .step([2, 2]) // place graticule lines ever 2 degrees of longitude and latitude
+            .extent([[-126, 44], [-110, 34]]); // extents of NV
 
         // add a gray background to the graticule
         var gratBackground = map.append("path")
@@ -628,7 +628,7 @@
 
 function makeXaxis(csvData) {
         // create a second svg element to hold the bar chart
-        var xAxis = d3.select(".barchart")
+        var xAxis = d3.select(".chart")
             .append("svg")
             .attr("width", chartWidth)
             .attr("height", 100)
@@ -646,7 +646,7 @@ function makeXaxis(csvData) {
                 var fraction = chartInnerWidth / csvData.length;
                 return 25 + (i * fraction) + ((fraction - 1) / 2);
             })
-            .attr("y", 10)
+            .attr("y", 383)
             .text(function (d) {
                 return d["County"]
             });
