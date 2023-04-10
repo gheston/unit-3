@@ -72,7 +72,7 @@
             height = 460;
 
         // create new svg container for the map
-        var map = d3.select("body")
+        var map = d3.select(".nevadaMap")
             .append("svg")
             .attr("class", "map")
             .attr("width", width)
@@ -281,7 +281,7 @@
 
 
         // create a second svg element to hold the bar chart
-        var chart = d3.select("body")
+        var chart = d3.select(".barchart")
             .append("svg")
             .attr("width", chartWidth)
             .attr("height", chartHeight)
@@ -384,7 +384,7 @@
     // function to create a dropdown menu for attribute selection
     function createDropdown(csvData) {
         // add select element
-        var dropdown = d3.select("body")
+        var dropdown = d3.select(".nevadaMap")
             .append("select")
             .attr("class", "dropdown")
             .on("change", function () {
@@ -582,7 +582,7 @@
         var countyNameWithoutSpace = countyNameNoSpace(props.County);
 
         //create info label div
-        var infolabel = d3.select("body")
+        var infolabel = d3.select(".nevadaMap")
             .append("div")
             .attr("class", "infolabel")
             .attr("id", countyNameWithoutSpace + "_label")
@@ -628,7 +628,7 @@
 
 function makeXaxis(csvData) {
         // create a second svg element to hold the bar chart
-        var xAxis = d3.select("body")
+        var xAxis = d3.select(".barchart")
             .append("svg")
             .attr("width", chartWidth)
             .attr("height", chartHeight)
