@@ -46,12 +46,12 @@
 
     // chart frame dimentions
     var chartWidth = window.innerWidth * 0.425,
-        chartHeight = 473,
+        chartHeight = 473, // outer dimensions to include the X axis county labels
         leftPadding = 25,
         rightPadding = 2,
         topBottomPadding = 5,
         chartInnerWidth = chartWidth - leftPadding - rightPadding,
-        chartInnerHeight = chartHeight - (topBottomPadding * 2) - 100,
+        chartInnerHeight = chartHeight - (topBottomPadding * 2) - 100, //100 for the county labels
         translate = "translate(" + leftPadding + "," + (topBottomPadding) + ")";
 
     // create a scale to size bars proportionally to frame
@@ -59,11 +59,8 @@
         .range([363, 0])
         .domain([0, 100]);
 
-
-
     //call setMap() when window loads
     window.onload = setMap();
-
 
     // set up choropleth map
     function setMap() {
@@ -136,8 +133,7 @@
             // add coordinated visualization to map
             setChart(csvData, colorScale);
 
-            // add charat's x axis
-            makeXaxis(csvData);
+
 
             // add dropdown menu
             createDropdown(csvData);
@@ -145,8 +141,6 @@
         }; // end callback()
 
     }; // end setMap()
-
-
 
     function setGraticule(map, path) {
 
@@ -279,7 +273,6 @@
 
     function setChart(csvData, colorScale) {
 
-
         // create a second svg element to hold the bar chart
         var chart = d3.select(".barchart")
             .append("svg")
@@ -295,7 +288,8 @@
             .attr("transform", translate);
 
 
-
+                        // add chart's x axis
+                        makeXaxis(csvData);
 
         // set bars for each county
         var bars = chart.selectAll(".bars")
@@ -327,9 +321,7 @@
             .attr("class", "chartTitle")
             .text(expressed + " in Each County");
 
-
-
-
+                        
         // annotate bars with attribute value text
         var numbers = chart.selectAll(".numbers")
             .data(csvData)
@@ -354,10 +346,6 @@
             .text(function (d) {
                 return Math.round(d[expressed]);
             });
-
-            // var numDesc = numbers.append("desc")
-            // .text('{"stroke": "none", "stroke-width": "0px"}');
-
 
         // create vertical axis generator
         var yAxis = d3.axisLeft()
@@ -627,14 +615,14 @@
     } // end countyNameNoSpace()
 
 function makeXaxis(csvData) {
-        // create a second svg element to hold the bar chart
+        //create a second svg element to hold the bar chart
         var xAxis = d3.select(".chart")
-            .append("svg")
-            .attr("width", chartWidth)
-            .attr("height", 100)
-            .attr("class", "chartXaxis");
+            // .append("svg")
+            // .attr("width", chartWidth)
+            // .attr("height", 100)
+            // .attr("class", "chartXaxis");
            
-            var countyLabels = xAxis.selectAll(".countyLabels")
+            var countyLabels = xAxis.selectAll(".countyLabel")
             .data(csvData)
             .enter()
             .append("text")
