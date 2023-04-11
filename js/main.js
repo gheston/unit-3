@@ -231,7 +231,7 @@
 
     // function to create color scale generator
     function makeColorScale(data) {
-        var colorClasses = ['#ffffcc','#c2e699','#78c679','#31a354','#006837']; // ColorBrewer.org yellow-green
+        var colorClasses = ['#fef0d9','#fdcc8a','#fc8d59','#e34a33','#b30000']; // ColorBrewer.org yellow-red
 
         // create color scale generator
         var colorScale = d3.scaleThreshold()
@@ -508,7 +508,7 @@
         var countyName = countyNameNoSpace(props.County);
 
         var selected = d3.selectAll("." + countyName)
-            .style("stroke", "red")
+            .style("stroke", "#0DFC50")
             .style("stroke-width", "2");
 
             // var selected = d3.selectAll(".counties" + countyName)
