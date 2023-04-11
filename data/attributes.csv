@@ -1,0 +1,24 @@
+﻿ID,fieldName,longName
+0,County,County 
+1,Category,Urban or Rural 
+2,Pop2022,Population 2022 
+3,AreaSqMi,Area (square miles) 
+4,Reg_NV_Pct,% of State's Registered Voters
+5,Reg_DEM_Pct,% Democratic Party Voters 
+6,Reg_REP_Pct,% Republican Party Voters 
+7,Reg_IAP_Pct,% Independent American Party Voters 
+8,Reg_LPN_Pct,% Libertarian Party Voters 
+9,Reg_Other_Pct,% Other Party Voters 
+10,Reg_NonP_Pct,% Nonpartisan Voters 
+11,Gov_DEM_Pct,% Voted for Democratic Governor Candidate 
+12,Gov_REP_Pct,% Voted for Republican Governor Candidate 
+13,Gov_IAP_Pct,% Voted for Independent American Governor Candidate 
+14,Gov_LPN_Pct,% Voted for Libertarian Governor Candidate 
+15,Gov_None_Pct,% Voted for 'None of These' Governor Candidates 
+16,Sen_DEM_Pct,% Voted for Democratic Senator Candidate 
+17,Sen_REP_Pct,% Voted for Republican Senator Candidate 
+18,Sen_IAP_Pct,% Voted for Independent American Senator Candidate 
+19,Sen_LPN_Pct,% Voted for Libertarian Senator Candidate 
+20,Sen_NPP_Pct,% Voted for Nonpartisan Senator Candidate 
+21,Sen_None_Pct,% Voted for 'None of These' Senator Candidates 
+22,Turnout_Pct,% Voter Turnout 
