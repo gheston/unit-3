@@ -1,45 +1,100 @@
 // Geog 575 Lab 2
 
+// attempt at loding attribute names with d3.csv - doesn't work
+// i can't figure out how to assign the output from d3.csv to a global array
+
 // wrapper function
 (function () {
 
     // pseudo-global variables
     // variables for data join
+var attrArrayWithLongNames = [];
 
-    var attrArray = ["County", "Category", "Pop2022", "AreaSqMi", "Reg_NV_Pct", "Reg_DEM_Pct", "Reg_REP_Pct", "Reg_IAP_Pct", "Reg_LPN_Pct", "Reg_Other_Pct", "Reg_NonP_Pct", "Gov_DEM_Pct", "Gov_REP_Pct", "Gov_IAP_Pct", "Gov_LPN_Pct", "Gov_None_Pct", "Sen_DEM_Pct", "Sen_REP_Pct", "Sen_IAP_Pct", "Sen_LPN_Pct", "Sen_NPP_Pct", "Sen_None_Pct", "Turnout_Pct"];
+loadAttrCsv();
+
+var expressed = ''; 
+
+function loadAttrCsv() {
+        
+    d3.csv('data/attributes.csv')
+            .then(data => {
+                data.forEach(d => {
+                    d.ID = +d.ID;
+                });
+                
+                doSomethingWithCsv(data);
+                
+            });
+     setTimeout(function(){
+        console.log(data);
+        },500);
+         
+    };
+
+    function doSomethingWithCsv(attrCsv){
+        //console.dir("attrArrayWithLongNames", attrCsv);
+    
+        attrArrayWithLongNames = attrCsv;
+
+        console.log("keys", Object.keys(attrCsv));
+        console.log("values", Object.values(attrCsv));
+        console.log("is array?", Array.isArray(attrCsv));
+
+        expressed = attrCsv[4].fieldName; // initial attribute
+        console.log(expressed);
+    };
+
+    console.log("is attrArrrayWithLongNames still here?", attrArrayWithLongNames);
+
+
+    // d3.csv("/data/attributes.csv").then(function(data) {
+    //     attrArrayWithLongNames = data;
+    //     //console.log("data:", data);
+    //   });
+    //   setTimeout(function(){
+    //     console.log(attrArrayWithLongNames);
+    //     },500);
+
+
+
+
+
+
+    //var attrArray = ["County", "Category", "Pop2022", "AreaSqMi", "Reg_NV_Pct", "Reg_DEM_Pct", "Reg_REP_Pct", "Reg_IAP_Pct", "Reg_LPN_Pct", "Reg_Other_Pct", "Reg_NonP_Pct", "Gov_DEM_Pct", "Gov_REP_Pct", "Gov_IAP_Pct", "Gov_LPN_Pct", "Gov_None_Pct", "Sen_DEM_Pct", "Sen_REP_Pct", "Sen_IAP_Pct", "Sen_LPN_Pct", "Sen_NPP_Pct", "Sen_None_Pct", "Turnout_Pct"];
 
     // array of CSV attribute names with long name aliases
-    var attrArrayWithLongNames = [
-        { fieldName: "County", longName: "County" },
-        { fieldName: "Category", longName: "Urban or Rural" },
-        { fieldName: "Pop2022", longName: "Population 2022" },
-        { fieldName: "AreaSqMi", longName: "Area (square miles)" }, { fieldName: "Reg_NV_Pct", longName: "% of State's Registered Voters" },
-        { fieldName: "Reg_DEM_Pct", longName: "% Democratic Party Voters" },
-        { fieldName: "Reg_REP_Pct", longName: "% Republican Party Voters" },
-        { fieldName: "Reg_IAP_Pct", longName: "% Independent American Party Voters" },
-        { fieldName: "Reg_LPN_Pct", longName: "% Libertarian Party Voters" },
-        { fieldName: "Reg_Other_Pct", longName: "% Other Party Voters" },
-        { fieldName: "Reg_NonP_Pct", longName: "% Nonpartisan Voters" },
-        { fieldName: "Gov_DEM_Pct", longName: "% Voted for Democratic Governor Candidate" },
-        { fieldName: "Gov_REP_Pct", longName: "% Voted for Republican Governor Candidate" },
-        { fieldName: "Gov_IAP_Pct", longName: "% Voted for Independent American Governor Candidate" },
-        { fieldName: "Gov_LPN_Pct", longName: "% Voted for Libertarian Governor Candidate" },
-        { fieldName: "Gov_None_Pct", longName: "% Voted for 'None of These' Governor Candidates" },
-        { fieldName: "Sen_DEM_Pct", longName: "% Voted for Democratic Senator Candidate" },
-        { fieldName: "Sen_REP_Pct", longName: "% Voted for Republican Senator Candidate" },
-        { fieldName: "Sen_IAP_Pct", longName: "% Voted for Independent American Senator Candidate" },
-        { fieldName: "Sen_LPN_Pct", longName: "% Voted for Libertarian Senator Candidate" },
-        { fieldName: "Sen_NPP_Pct", longName: "% Voted for Nonpartisan Senator Candidate" },
-        { fieldName: "Sen_None_Pct", longName: "% Voted for 'None of These' Senator Candidates" },
-        { fieldName: "Turnout_Pct", longName: "% Voter Turnout" }
-    ];
+    // var attrArrayWithLongNames = [
+    //     { fieldName: "County", longName: "County" },
+    //     { fieldName: "Category", longName: "Urban or Rural" },
+    //     { fieldName: "Pop2022", longName: "Population 2022" },
+    //     { fieldName: "AreaSqMi", longName: "Area (square miles)" }, 
+    //     { fieldName: "Reg_NV_Pct", longName: "% of State's Registered Voters" },
+    //     { fieldName: "Reg_DEM_Pct", longName: "% Democratic Party Voters" },
+    //     { fieldName: "Reg_REP_Pct", longName: "% Republican Party Voters" },
+    //     { fieldName: "Reg_IAP_Pct", longName: "% Independent American Party Voters" },
+    //     { fieldName: "Reg_LPN_Pct", longName: "% Libertarian Party Voters" },
+    //     { fieldName: "Reg_Other_Pct", longName: "% Other Party Voters" },
+    //     { fieldName: "Reg_NonP_Pct", longName: "% Nonpartisan Voters" },
+    //     { fieldName: "Gov_DEM_Pct", longName: "% Voted for Democratic Governor Candidate" },
+    //     { fieldName: "Gov_REP_Pct", longName: "% Voted for Republican Governor Candidate" },
+    //     { fieldName: "Gov_IAP_Pct", longName: "% Voted for Independent American Governor Candidate" },
+    //     { fieldName: "Gov_LPN_Pct", longName: "% Voted for Libertarian Governor Candidate" },
+    //     { fieldName: "Gov_None_Pct", longName: "% Voted for 'None of These' Governor Candidates" },
+    //     { fieldName: "Sen_DEM_Pct", longName: "% Voted for Democratic Senator Candidate" },
+    //     { fieldName: "Sen_REP_Pct", longName: "% Voted for Republican Senator Candidate" },
+    //     { fieldName: "Sen_IAP_Pct", longName: "% Voted for Independent American Senator Candidate" },
+    //     { fieldName: "Sen_LPN_Pct", longName: "% Voted for Libertarian Senator Candidate" },
+    //     { fieldName: "Sen_NPP_Pct", longName: "% Voted for Nonpartisan Senator Candidate" },
+    //     { fieldName: "Sen_None_Pct", longName: "% Voted for 'None of These' Senator Candidates" },
+    //     { fieldName: "Turnout_Pct", longName: "% Voter Turnout" }
+    // ];
 
     // array of variables without the descriptiive attributes
     var attrArrayShorter = ["Reg_NV_Pct", "Reg_DEM_Pct", "Reg_REP_Pct", "Reg_IAP_Pct", "Reg_LPN_Pct", "Reg_Other_Pct", "Reg_NonP_Pct", "Gov_DEM_Pct", "Gov_REP_Pct", "Gov_IAP_Pct", "Gov_LPN_Pct", "Gov_None_Pct", "Sen_DEM_Pct", "Sen_REP_Pct", "Sen_IAP_Pct", "Sen_LPN_Pct", "Sen_NPP_Pct", "Sen_None_Pct", "Turnout_Pct"];
 
 
-    var expressed = attrArray[4]; // initial attribute
-    //console.log(expressed);
+
+
 
     // width and height for outer gray container
     //var w = 900, h = 500;
@@ -178,7 +233,7 @@
                 //where primary keys match, transfer csv data to geojson properties object
                 if (geojsonKey == csvKey) {
                     // assign all attributes and values
-                    attrArray.forEach(function (attr) {
+                    attrArrayWithLongNames['fieldName'].forEach(function (attr) {
                         var val = csvRegion[attr]// get csv attribute value
                         if (typeof val === "string") {
                             geojsonProps[attr] = val; // assign attribute and value to geojson proerties
